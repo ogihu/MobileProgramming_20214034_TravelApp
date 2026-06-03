@@ -31,7 +31,11 @@ object ImageFileHelper {
     }
 
     fun copyFileToInternalStorage(context: Context, sourceFile: File): String? {
-        if (!sourceFile.exists()) return null
+        if (!sourceFile.exists() || sourceFile.length() == 0L) return null
+        val photosDir = File(context.filesDir, PHOTO_DIR).absolutePath
+        if (sourceFile.absolutePath.startsWith(photosDir)) {
+            return sourceFile.absolutePath
+        }
         return copyToInternalStorage(context, Uri.fromFile(sourceFile))
     }
 

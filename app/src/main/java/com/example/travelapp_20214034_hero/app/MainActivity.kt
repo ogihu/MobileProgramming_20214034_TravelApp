@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
                             supportFragmentManager.popBackStack()
                             homeFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
                                 as? HomeFragment
+                            homeFragment?.refreshList()
                         } else {
                             showFragment(HomeFragment(), TAG_HOME, addToBackStack = false)
                         }
@@ -80,7 +81,7 @@ class MainActivity : AppCompatActivity() {
         if (addToBackStack) {
             transaction.addToBackStack(tag)
         }
-        transaction.commit()
+        transaction.commitNow()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

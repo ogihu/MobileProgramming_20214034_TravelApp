@@ -47,6 +47,8 @@ com.example.travelapp_20214034_hero/
 | 카카오맵 마커 | ✅ (키·콘솔 설정 필요) |
 | GPS EXIF → 위·경도 자동 입력 | ✅ |
 | 삭제 시 내부 사진 파일 정리 | ✅ |
+| RecyclerView DiffUtil | ✅ |
+| Activity Result 목록 갱신 | ✅ |
 
 ## res 리소스 (이름 규칙)
 | 파일 | 기능 |

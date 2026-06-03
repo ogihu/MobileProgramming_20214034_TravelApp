@@ -39,6 +39,7 @@ class DetailActivity : AppCompatActivity() {
             val item = withContext(Dispatchers.IO) {
                 TravelDbHelper(this@DetailActivity).getTravelById(id)
             }
+            if (isFinishing || isDestroyed) return@launch
             binding.progressBar.visibility = View.GONE
 
             if (item == null) {

@@ -98,6 +98,7 @@ class AddEditActivity : AppCompatActivity() {
         binding.progressBar.visibility = View.VISIBLE
         lifecycleScope.launch {
             val item = withContext(Dispatchers.IO) { dbHelper.getTravelById(id) }
+            if (isFinishing || isDestroyed) return@launch
             binding.progressBar.visibility = View.GONE
             if (item == null) {
                 Toast.makeText(this@AddEditActivity, R.string.error_not_found, Toast.LENGTH_SHORT)
@@ -128,6 +129,7 @@ class AddEditActivity : AppCompatActivity() {
                 PhotoExifHelper.readGps(this@AddEditActivity, uri)
                     ?: uri.path?.let { PhotoExifHelper.readGpsFromPath(it) }
             }
+            if (isFinishing || isDestroyed) return@launch
             if (gps == null) {
                 Toast.makeText(
                     this@AddEditActivity,
@@ -183,6 +185,7 @@ class AddEditActivity : AppCompatActivity() {
             val result = withContext(Dispatchers.IO) {
                 geocodePlaceName(keyword)
             }
+            if (isFinishing || isDestroyed) return@launch
             binding.progressBar.visibility = View.GONE
             if (result == null) {
                 Toast.makeText(this@AddEditActivity, R.string.search_place_failed, Toast.LENGTH_SHORT)
@@ -267,6 +270,19 @@ class AddEditActivity : AppCompatActivity() {
                 ImageFileHelper.persistPhotoPath(this@AddEditActivity, photoUriString)
             }
 
+            if (isFinishing || isDestroyed) return@launch
+
+            if (!photoUriString.isNullOrBlank() && savedPhotoPath == null) {
+                binding.progressBar.visibility = View.GONE
+                binding.buttonSave.isEnabled = true
+                Toast.makeText(
+                    this@AddEditActivity,
+                    R.string.error_photo_copy_failed,
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@launch
+            }
+
             val item = TravelItem(
                 id = if (editId > 0) editId else 0,
                 place = place,
@@ -299,6 +315,7 @@ class AddEditActivity : AppCompatActivity() {
                 }
             }
 
+            if (isFinishing || isDestroyed) return@launch
             binding.progressBar.visibility = View.GONE
             binding.buttonSave.isEnabled = true
 

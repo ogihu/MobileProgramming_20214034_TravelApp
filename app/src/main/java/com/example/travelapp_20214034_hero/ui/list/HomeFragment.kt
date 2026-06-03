@@ -1,5 +1,6 @@
 package com.example.travelapp_20214034_hero.ui.list
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.ContextMenu
@@ -8,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -34,6 +36,13 @@ class HomeFragment : Fragment() {
 
     private var sortDescending = true
     private var contextMenuTravel: TravelItem? = null
+
+    private val addEditLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                refreshList()
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,8 +77,10 @@ class HomeFragment : Fragment() {
         binding.recyclerTravels.adapter = adapter
 
         binding.fabAdd.setOnClickListener {
-            startActivity(Intent(requireContext(), AddEditActivity::class.java))
+            addEditLauncher.launch(Intent(requireContext(), AddEditActivity::class.java))
         }
+
+        refreshList()
     }
 
     override fun onCreateContextMenu(
@@ -87,7 +98,7 @@ class HomeFragment : Fragment() {
         val travel = contextMenuTravel ?: return false
         return when (item.itemId) {
             R.id.context_edit -> {
-                startActivity(
+                addEditLauncher.launch(
                     Intent(requireContext(), AddEditActivity::class.java).apply {
                         putExtra(TravelExtras.EXTRA_TRAVEL_ID, travel.id)
                     }
@@ -102,15 +113,8 @@ class HomeFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (_binding != null) {
-            refreshList()
-        }
-    }
-
     fun refreshList(sortDesc: Boolean? = null) {
-        if (_binding == null) return
+        if (_binding == null || !isAdded) return
         if (sortDesc != null) {
             sortDescending = sortDesc
         }
@@ -120,12 +124,12 @@ class HomeFragment : Fragment() {
             val list = withContext(Dispatchers.IO) {
                 dbHelper.getAllTravels(sortDescending)
             }
+            if (_binding == null || !isAdded) return@launch
             adapter.submitList(list)
-            val uiBinding = _binding ?: return@launch
-            uiBinding.progressBar.visibility = View.GONE
+            binding.progressBar.visibility = View.GONE
             val isEmpty = list.isEmpty()
-            uiBinding.textEmpty.visibility = if (isEmpty) View.VISIBLE else View.GONE
-            uiBinding.recyclerTravels.visibility = if (isEmpty) View.GONE else View.VISIBLE
+            binding.textEmpty.visibility = if (isEmpty) View.VISIBLE else View.GONE
+            binding.recyclerTravels.visibility = if (isEmpty) View.GONE else View.VISIBLE
         }
     }
 
@@ -146,6 +150,7 @@ class HomeFragment : Fragment() {
                         dbHelper.deleteAllTravels()
                         ImageFileHelper.deleteAllInternalPhotos(requireContext())
                     }
+                    if (!isAdded) return@launch
                     Toast.makeText(requireContext(), R.string.deleted, Toast.LENGTH_SHORT).show()
                     refreshList()
                 }
@@ -165,6 +170,7 @@ class HomeFragment : Fragment() {
                         dbHelper.deleteTravel(item.id)
                         ImageFileHelper.deletePhotoFile(existing?.photoUri)
                     }
+                    if (!isAdded) return@launch
                     Toast.makeText(requireContext(), R.string.deleted, Toast.LENGTH_SHORT).show()
                     refreshList()
                 }

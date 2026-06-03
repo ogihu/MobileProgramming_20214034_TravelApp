@@ -80,7 +80,7 @@ class MapFragment : Fragment() {
             mapStartRequested = true
             startKakaoMap()
         } else if (kakaoMap != null) {
-            loadMarkers()
+            loadMarkers(showEmptyHints = false)
         }
     }
 
@@ -199,22 +199,24 @@ class MapFragment : Fragment() {
 
                 if (markerPositions.isEmpty()) {
                     showDefaultMapArea(map)
-                    when {
-                        travels.isEmpty() -> Toast.makeText(
-                            requireContext(),
-                            R.string.map_no_markers,
-                            Toast.LENGTH_LONG
-                        ).show()
-                        layer == null || styles == null -> Toast.makeText(
-                            requireContext(),
-                            R.string.map_markers_setup_failed,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        else -> Toast.makeText(
-                            requireContext(),
-                            R.string.map_no_location_data,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    if (showEmptyHints) {
+                        when {
+                            travels.isEmpty() -> Toast.makeText(
+                                requireContext(),
+                                R.string.map_no_markers,
+                                Toast.LENGTH_LONG
+                            ).show()
+                            layer == null || styles == null -> Toast.makeText(
+                                requireContext(),
+                                R.string.map_markers_setup_failed,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            else -> Toast.makeText(
+                                requireContext(),
+                                R.string.map_no_location_data,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                     return@launch
                 }
@@ -253,7 +255,7 @@ class MapFragment : Fragment() {
     fun fitAllMarkers() {
         val map = kakaoMap ?: return
         if (markerPositions.isEmpty()) {
-            loadMarkers()
+            loadMarkers(showEmptyHints = true)
             return
         }
         moveCameraToMarkers(map)

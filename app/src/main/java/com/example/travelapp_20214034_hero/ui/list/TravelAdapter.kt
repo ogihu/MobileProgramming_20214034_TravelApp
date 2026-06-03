@@ -3,7 +3,7 @@ package com.example.travelapp_20214034_hero.ui.list
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.bumptech.glide.Glide
 import com.example.travelapp_20214034_hero.R
 import com.example.travelapp_20214034_hero.common.ImageFileHelper
@@ -14,17 +14,9 @@ class TravelAdapter(
     private val onItemClick: (TravelItem) -> Unit,
     private val onRegisterContextMenu: (View, Int) -> Unit,
     private val onUnregisterContextMenu: (View) -> Unit
-) : RecyclerView.Adapter<TravelViewHolder>() {
+) : ListAdapter<TravelItem, TravelViewHolder>(TravelDiffCallback()) {
 
-    private val items = mutableListOf<TravelItem>()
-
-    fun submitList(newItems: List<TravelItem>) {
-        items.clear()
-        items.addAll(newItems)
-        notifyDataSetChanged()
-    }
-
-    fun getItemAt(position: Int): TravelItem? = items.getOrNull(position)
+    fun getItemAt(position: Int): TravelItem? = currentList.getOrNull(position)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TravelViewHolder {
         val binding = ItemTravelBinding.inflate(
@@ -36,21 +28,21 @@ class TravelAdapter(
     }
 
     override fun onBindViewHolder(holder: TravelViewHolder, position: Int) {
-        val item = items[position]
+        val item = getItem(position)
         holder.binding.textPlace.text = item.place
         holder.binding.textDate.text = item.visitDate
         holder.binding.textMemoPreview.text =
             if (item.memo.isBlank()) "" else item.memo
 
-        val context = holder.itemView.context
         val loadTarget = ImageFileHelper.resolveForGlide(item.photoUri)
         if (loadTarget != null) {
-            Glide.with(context)
+            Glide.with(holder.itemView)
                 .load(loadTarget)
                 .centerCrop()
                 .placeholder(R.drawable.bg_photo_placeholder)
                 .into(holder.binding.imageThumbnail)
         } else {
+            Glide.with(holder.itemView).clear(holder.binding.imageThumbnail)
             holder.binding.imageThumbnail.setImageResource(R.drawable.bg_photo_placeholder)
         }
 
@@ -60,9 +52,8 @@ class TravelAdapter(
     }
 
     override fun onViewRecycled(holder: TravelViewHolder) {
+        Glide.with(holder.itemView).clear(holder.binding.imageThumbnail)
         onUnregisterContextMenu(holder.itemView)
         super.onViewRecycled(holder)
     }
-
-    override fun getItemCount(): Int = items.size
 }

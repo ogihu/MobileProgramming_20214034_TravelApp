@@ -38,8 +38,10 @@ class TravelDbHelper(context: Context) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_TRAVEL")
-        onCreate(db)
+        // 스키마 변경 시 버전별 마이그레이션 추가. 현재 v1만 사용.
+        if (oldVersion < 1) {
+            onCreate(db)
+        }
     }
 
     fun insertTravel(item: TravelItem): Long {
