@@ -41,4 +41,15 @@
     <string name="map_no_key_hint">지도를 사용하려면 local.properties에\nMAPS_API_KEY=발급키 를 추가한 뒤 Sync 하세요.</string>
     <string name="map_no_markers">좌표가 있는 여행 기록이 없습니다.\n추가/수정 화면에서 위도·경도를 입력하세요.</string>
     <string name="camera_permission_denied">카메라 권한이 필요합니다.</string>
+    <string name="location_permission_denied">위치 권한이 필요합니다.</string>
+    <string name="search_place">여행지 검색 (Geocoder)</string>
+    <string name="search_place_title">여행지 검색</string>
+    <string name="search">검색</string>
+    <string name="search_place_ok">좌표를 찾았습니다.</string>
+    <string name="search_place_failed">장소를 찾지 못했습니다.</string>
+    <string name="error_save_failed">저장에 실패했습니다.</string>
+    <string name="map_load_error">지도를 불러오지 못했습니다.</string>
+    <string name="menu_map_normal">일반 지도</string>
+    <string name="menu_map_satellite">위성 지도</string>
+    <string name="menu_map_fit">마커 전체 보기</string>
 </resources>

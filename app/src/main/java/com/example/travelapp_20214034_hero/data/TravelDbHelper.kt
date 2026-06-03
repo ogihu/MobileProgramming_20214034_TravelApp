@@ -5,6 +5,19 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
+/**
+ * [CH11] SQLiteOpenHelper — travel 테이블 CRUD
+ *
+ * CREATE TABLE travel (
+ *   id INTEGER PRIMARY KEY AUTOINCREMENT,
+ *   place TEXT, visit_date TEXT, memo TEXT,
+ *   photo_uri TEXT, latitude REAL, longitude REAL
+ * )
+ *
+ * SELECT * FROM travel ORDER BY visit_date → getAllTravels()
+ * SELECT * FROM travel WHERE id=?         → getTravelById()
+ * INSERT / UPDATE / DELETE                → insert/update/deleteTravel()
+ */
 class TravelDbHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -37,13 +50,13 @@ class TravelDbHelper(context: Context) :
     fun getAllTravels(sortDescending: Boolean = true): List<TravelItem> {
         val order = if (sortDescending) "DESC" else "ASC"
         val sql = "SELECT * FROM $TABLE_TRAVEL ORDER BY $COL_VISIT_DATE $order, $COL_ID $order"
-        return readableDatabase.rawQuery(sql, null).use { cursor ->
-            buildList {
-                while (cursor.moveToNext()) {
-                    add(cursorToTravel(cursor))
-                }
-            }
-        }
+        return queryList(sql, null)
+    }
+
+    fun getTravelsWithLocation(): List<TravelItem> {
+        val sql =
+            "SELECT * FROM $TABLE_TRAVEL WHERE $COL_LATITUDE IS NOT NULL AND $COL_LONGITUDE IS NOT NULL"
+        return queryList(sql, null)
     }
 
     fun getTravelById(id: Long): TravelItem? {
@@ -73,6 +86,16 @@ class TravelDbHelper(context: Context) :
 
     fun deleteAllTravels(): Int {
         return writableDatabase.delete(TABLE_TRAVEL, null, null)
+    }
+
+    private fun queryList(sql: String, args: Array<String>?): List<TravelItem> {
+        return readableDatabase.rawQuery(sql, args).use { cursor ->
+            buildList {
+                while (cursor.moveToNext()) {
+                    add(cursorToTravel(cursor))
+                }
+            }
+        }
     }
 
     private fun contentValuesFrom(item: TravelItem): ContentValues {

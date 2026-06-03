@@ -16,4 +16,22 @@
         android:id="@+id/action_about"
         android:title="@string/menu_about"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_map_normal"
+        android:title="@string/menu_map_normal"
+        android:visible="false"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_map_satellite"
+        android:title="@string/menu_map_satellite"
+        android:visible="false"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_map_fit"
+        android:title="@string/menu_map_fit"
+        android:visible="false"
+        app:showAsAction="never" />
 </menu>

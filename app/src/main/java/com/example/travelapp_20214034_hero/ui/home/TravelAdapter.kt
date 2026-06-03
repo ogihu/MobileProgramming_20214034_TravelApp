@@ -1,6 +1,5 @@
 package com.example.travelapp_20214034_hero.ui.home
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -8,10 +7,10 @@ import com.bumptech.glide.Glide
 import com.example.travelapp_20214034_hero.R
 import com.example.travelapp_20214034_hero.data.TravelItem
 import com.example.travelapp_20214034_hero.databinding.ItemTravelBinding
+import com.example.travelapp_20214034_hero.util.ImageFileHelper
 
 class TravelAdapter(
-    private val onItemClick: (TravelItem) -> Unit,
-    private val onItemLongClick: (TravelItem) -> Unit
+    private val onItemClick: (TravelItem) -> Unit
 ) : RecyclerView.Adapter<TravelViewHolder>() {
 
     private val items = mutableListOf<TravelItem>()
@@ -21,6 +20,8 @@ class TravelAdapter(
         items.addAll(newItems)
         notifyDataSetChanged()
     }
+
+    fun getItemAt(position: Int): TravelItem? = items.getOrNull(position)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TravelViewHolder {
         val binding = ItemTravelBinding.inflate(
@@ -39,9 +40,10 @@ class TravelAdapter(
             if (item.memo.isBlank()) "" else item.memo
 
         val context = holder.itemView.context
-        if (!item.photoUri.isNullOrBlank()) {
+        val loadTarget = ImageFileHelper.resolveForGlide(item.photoUri)
+        if (loadTarget != null) {
             Glide.with(context)
-                .load(Uri.parse(item.photoUri))
+                .load(loadTarget)
                 .centerCrop()
                 .placeholder(R.drawable.bg_photo_placeholder)
                 .into(holder.binding.imageThumbnail)
@@ -50,10 +52,6 @@ class TravelAdapter(
         }
 
         holder.itemView.setOnClickListener { onItemClick(item) }
-        holder.itemView.setOnLongClickListener {
-            onItemLongClick(item)
-            true
-        }
     }
 
     override fun getItemCount(): Int = items.size

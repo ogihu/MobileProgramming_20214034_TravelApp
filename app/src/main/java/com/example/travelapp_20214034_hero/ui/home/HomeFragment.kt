@@ -2,10 +2,12 @@ package com.example.travelapp_20214034_hero.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.ContextMenu
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupMenu
+import android.widget.AdapterView.AdapterContextMenuInfo
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -31,6 +33,7 @@ class HomeFragment : Fragment() {
     private lateinit var adapter: TravelAdapter
 
     private var sortDescending = true
+    private var contextMenuTravel: TravelItem? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,15 +55,45 @@ class HomeFragment : Fragment() {
                         putExtra(TravelExtras.EXTRA_TRAVEL_ID, item.id)
                     }
                 )
-            },
-            onItemLongClick = { item -> showContextMenu(item) }
+            }
         )
 
         binding.recyclerTravels.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerTravels.adapter = adapter
+        registerForContextMenu(binding.recyclerTravels)
 
         binding.fabAdd.setOnClickListener {
             startActivity(Intent(requireContext(), AddEditActivity::class.java))
+        }
+    }
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu,
+        v: View,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        val info = menuInfo as? AdapterContextMenuInfo ?: return
+        contextMenuTravel = adapter.getItemAt(info.position) ?: return
+        requireActivity().menuInflater.inflate(R.menu.menu_travel_context, menu)
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        val travel = contextMenuTravel ?: return false
+        return when (item.itemId) {
+            R.id.context_edit -> {
+                startActivity(
+                    Intent(requireContext(), AddEditActivity::class.java).apply {
+                        putExtra(TravelExtras.EXTRA_TRAVEL_ID, travel.id)
+                    }
+                )
+                true
+            }
+            R.id.context_delete -> {
+                confirmDelete(travel)
+                true
+            }
+            else -> super.onContextItemSelected(item)
         }
     }
 
@@ -108,29 +141,6 @@ class HomeFragment : Fragment() {
             .show()
     }
 
-    private fun showContextMenu(item: TravelItem) {
-        val popup = PopupMenu(requireContext(), binding.recyclerTravels)
-        popup.menuInflater.inflate(R.menu.menu_travel_context, popup.menu)
-        popup.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.context_edit -> {
-                    startActivity(
-                        Intent(requireContext(), AddEditActivity::class.java).apply {
-                            putExtra(TravelExtras.EXTRA_TRAVEL_ID, item.id)
-                        }
-                    )
-                    true
-                }
-                R.id.context_delete -> {
-                    confirmDelete(item)
-                    true
-                }
-                else -> false
-            }
-        }
-        popup.show()
-    }
-
     private fun confirmDelete(item: TravelItem) {
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.dialog_delete_title)
@@ -147,6 +157,7 @@ class HomeFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        unregisterForContextMenu(binding.recyclerTravels)
         super.onDestroyView()
         _binding = null
     }

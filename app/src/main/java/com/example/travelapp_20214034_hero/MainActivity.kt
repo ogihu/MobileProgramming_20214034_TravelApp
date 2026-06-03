@@ -50,12 +50,14 @@ class MainActivity : AppCompatActivity() {
                             showFragment(HomeFragment(), TAG_HOME, addToBackStack = false)
                         }
                     }
+                    invalidateOptionsMenu()
                     true
                 }
                 R.id.nav_map -> {
                     if (supportFragmentManager.findFragmentById(R.id.fragmentContainer) !is MapFragment) {
                         showFragment(MapFragment(), TAG_MAP, addToBackStack = true)
                     }
+                    invalidateOptionsMenu()
                     true
                 }
                 else -> false
@@ -80,8 +82,19 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        val onMap = supportFragmentManager.findFragmentById(R.id.fragmentContainer) is MapFragment
+        menu.findItem(R.id.action_sort)?.isVisible = !onMap
+        menu.findItem(R.id.action_delete_all)?.isVisible = !onMap
+        menu.findItem(R.id.action_map_normal)?.isVisible = onMap
+        menu.findItem(R.id.action_map_satellite)?.isVisible = onMap
+        menu.findItem(R.id.action_map_fit)?.isVisible = onMap
+        return super.onPrepareOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val home = findHomeFragment()
+        val map = findMapFragment()
         return when (item.itemId) {
             R.id.action_sort -> {
                 home?.toggleSort()
@@ -99,6 +112,18 @@ class MainActivity : AppCompatActivity() {
                     .show()
                 true
             }
+            R.id.action_map_normal -> {
+                map?.setMapTypeNormal()
+                true
+            }
+            R.id.action_map_satellite -> {
+                map?.setMapTypeSatellite()
+                true
+            }
+            R.id.action_map_fit -> {
+                map?.fitAllMarkers()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -108,6 +133,11 @@ class MainActivity : AppCompatActivity() {
         return supportFragmentManager.fragments
             .filterIsInstance<HomeFragment>()
             .firstOrNull()
+    }
+
+    private fun findMapFragment(): MapFragment? {
+        return supportFragmentManager.findFragmentById(R.id.fragmentContainer) as? MapFragment
+            ?: supportFragmentManager.fragments.filterIsInstance<MapFragment>().firstOrNull()
     }
 
     companion object {

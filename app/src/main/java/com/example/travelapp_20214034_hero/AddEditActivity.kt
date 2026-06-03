@@ -2,18 +2,27 @@ package com.example.travelapp_20214034_hero
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.travelapp_20214034_hero.data.TravelDbHelper
 import com.example.travelapp_20214034_hero.data.TravelItem
 import com.example.travelapp_20214034_hero.databinding.ActivityAddEditBinding
+import com.example.travelapp_20214034_hero.util.ImageFileHelper
 import com.google.android.material.datepicker.MaterialDatePicker
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -76,6 +85,7 @@ class AddEditActivity : AppCompatActivity() {
             pickGalleryLauncher.launch("image/*")
         }
         binding.buttonCamera.setOnClickListener { checkCameraAndCapture() }
+        binding.buttonSearchPlace.setOnClickListener { showPlaceSearchDialog() }
         binding.buttonSave.setOnClickListener { saveTravel() }
     }
 
@@ -92,7 +102,7 @@ class AddEditActivity : AppCompatActivity() {
         item.latitude?.let { binding.editLatitude.setText(it.toString()) }
         item.longitude?.let { binding.editLongitude.setText(it.toString()) }
         photoUriString = item.photoUri
-        item.photoUri?.let { loadPhotoPreview(Uri.parse(it)) }
+        ImageFileHelper.resolveForGlide(item.photoUri)?.let { loadPhotoPreview(it) }
     }
 
     private fun showDatePicker() {
@@ -104,6 +114,53 @@ class AddEditActivity : AppCompatActivity() {
             dateFormat.timeZone = TimeZone.getDefault()
         }
         picker.show(supportFragmentManager, "date_picker")
+    }
+
+    private fun showPlaceSearchDialog() {
+        val editText = EditText(this).apply {
+            hint = getString(R.string.hint_place)
+            setText(binding.editPlace.text)
+            setPadding(48, 32, 48, 16)
+        }
+        AlertDialog.Builder(this)
+            .setTitle(R.string.search_place_title)
+            .setView(editText)
+            .setPositiveButton(R.string.search) { _, _ ->
+                searchPlace(editText.text?.toString()?.trim().orEmpty())
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    private fun searchPlace(keyword: String) {
+        if (keyword.isEmpty()) {
+            Toast.makeText(this, R.string.error_place_required, Toast.LENGTH_SHORT).show()
+            return
+        }
+        binding.progressBar.visibility = View.VISIBLE
+        lifecycleScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                try {
+                    if (!Geocoder.isPresent()) return@withContext null
+                    val geocoder = Geocoder(this@AddEditActivity, Locale.KOREA)
+                    @Suppress("DEPRECATION")
+                    val addresses = geocoder.getFromLocationName(keyword, 1)
+                    addresses?.firstOrNull()
+                } catch (_: Exception) {
+                    null
+                }
+            }
+            binding.progressBar.visibility = View.GONE
+            if (result == null) {
+                Toast.makeText(this@AddEditActivity, R.string.search_place_failed, Toast.LENGTH_SHORT)
+                    .show()
+                return@launch
+            }
+            binding.editPlace.setText(result.getAddressLine(0) ?: keyword)
+            binding.editLatitude.setText(result.latitude.toString())
+            binding.editLongitude.setText(result.longitude.toString())
+            Toast.makeText(this@AddEditActivity, R.string.search_place_ok, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun checkCameraAndCapture() {
@@ -125,9 +182,9 @@ class AddEditActivity : AppCompatActivity() {
         takePictureLauncher.launch(cameraOutputUri)
     }
 
-    private fun loadPhotoPreview(uri: Uri) {
+    private fun loadPhotoPreview(source: Any) {
         Glide.with(this)
-            .load(uri)
+            .load(source)
             .centerCrop()
             .into(binding.imagePhoto)
     }
@@ -149,25 +206,44 @@ class AddEditActivity : AppCompatActivity() {
         val lat = binding.editLatitude.text?.toString()?.trim()?.toDoubleOrNull()
         val lng = binding.editLongitude.text?.toString()?.trim()?.toDoubleOrNull()
 
-        val item = TravelItem(
-            id = if (editId > 0) editId else 0,
-            place = place,
-            visitDate = date,
-            memo = memo,
-            photoUri = photoUriString,
-            latitude = lat,
-            longitude = lng
-        )
+        binding.buttonSave.isEnabled = false
+        binding.progressBar.visibility = View.VISIBLE
 
-        if (editId > 0) {
-            dbHelper.updateTravel(item)
-        } else {
-            dbHelper.insertTravel(item)
+        lifecycleScope.launch {
+            val savedPhotoPath = withContext(Dispatchers.IO) {
+                ImageFileHelper.persistPhotoPath(this@AddEditActivity, photoUriString)
+            }
+
+            val item = TravelItem(
+                id = if (editId > 0) editId else 0,
+                place = place,
+                visitDate = date,
+                memo = memo,
+                photoUri = savedPhotoPath,
+                latitude = lat,
+                longitude = lng
+            )
+
+            val success = withContext(Dispatchers.IO) {
+                if (editId > 0) {
+                    dbHelper.updateTravel(item) > 0
+                } else {
+                    dbHelper.insertTravel(item) != -1L
+                }
+            }
+
+            binding.progressBar.visibility = View.GONE
+            binding.buttonSave.isEnabled = true
+
+            if (success) {
+                Toast.makeText(this@AddEditActivity, R.string.saved, Toast.LENGTH_SHORT).show()
+                setResult(RESULT_OK)
+                finish()
+            } else {
+                Toast.makeText(this@AddEditActivity, R.string.error_save_failed, Toast.LENGTH_SHORT)
+                    .show()
+            }
         }
-
-        Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show()
-        setResult(RESULT_OK)
-        finish()
     }
 
     override fun onSupportNavigateUp(): Boolean {
