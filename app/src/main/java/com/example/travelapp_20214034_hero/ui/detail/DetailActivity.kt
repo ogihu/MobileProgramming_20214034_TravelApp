@@ -58,11 +58,15 @@ class DetailActivity : AppCompatActivity() {
                     getString(R.string.no_location)
                 }
 
-            ImageFileHelper.resolveForGlide(item.photoUri)?.let { target ->
+            val photoTarget = ImageFileHelper.resolveForGlide(item.photoUri)
+            if (photoTarget != null) {
                 Glide.with(this@DetailActivity)
-                    .load(target)
+                    .load(photoTarget)
                     .centerCrop()
+                    .placeholder(R.drawable.bg_photo_placeholder)
                     .into(binding.imagePhoto)
+            } else {
+                binding.imagePhoto.setImageResource(R.drawable.bg_photo_placeholder)
             }
         }
     }

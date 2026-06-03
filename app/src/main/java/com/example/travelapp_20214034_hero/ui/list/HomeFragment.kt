@@ -57,10 +57,10 @@ class HomeFragment : Fragment() {
                 )
             },
             onRegisterContextMenu = { itemView, _ ->
-                requireActivity().registerForContextMenu(itemView)
+                registerForContextMenu(itemView)
             },
             onUnregisterContextMenu = { itemView ->
-                requireActivity().unregisterForContextMenu(itemView)
+                unregisterForContextMenu(itemView)
             }
         )
 

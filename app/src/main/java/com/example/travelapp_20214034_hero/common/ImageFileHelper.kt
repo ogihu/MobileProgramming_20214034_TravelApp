@@ -16,8 +16,13 @@ object ImageFileHelper {
         return try {
             val dir = File(context.filesDir, PHOTO_DIR).apply { mkdirs() }
             val outFile = File(dir, "travel_${System.currentTimeMillis()}.jpg")
-            context.contentResolver.openInputStream(sourceUri)?.use { input ->
-                FileOutputStream(outFile).use { output -> input.copyTo(output) }
+            val input = context.contentResolver.openInputStream(sourceUri) ?: return null
+            input.use { stream ->
+                FileOutputStream(outFile).use { output -> stream.copyTo(output) }
+            }
+            if (!outFile.exists() || outFile.length() == 0L) {
+                outFile.delete()
+                return null
             }
             outFile.absolutePath
         } catch (_: Exception) {

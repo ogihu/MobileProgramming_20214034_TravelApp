@@ -154,7 +154,7 @@ class MapFragment : Fragment() {
                     LabelStyle.from(LabelTextStyle.from(28, Color.BLACK))
                 )
             )
-            labelLayer = manager.layer
+            labelLayer = manager.layer ?: manager.getLayer()
         } catch (e: Exception) {
             Log.w(TAG, "Label setup skipped", e)
         }
@@ -199,11 +199,21 @@ class MapFragment : Fragment() {
 
                 if (markerPositions.isEmpty()) {
                     showDefaultMapArea(map)
-                    if (travels.isEmpty()) {
-                        Toast.makeText(
+                    when {
+                        travels.isEmpty() -> Toast.makeText(
                             requireContext(),
                             R.string.map_no_markers,
                             Toast.LENGTH_LONG
+                        ).show()
+                        layer == null || styles == null -> Toast.makeText(
+                            requireContext(),
+                            R.string.map_markers_setup_failed,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        else -> Toast.makeText(
+                            requireContext(),
+                            R.string.map_no_location_data,
+                            Toast.LENGTH_SHORT
                         ).show()
                     }
                     return@launch
@@ -250,6 +260,11 @@ class MapFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        try {
+            mapView?.finish()
+        } catch (e: Exception) {
+            Log.w(TAG, "MapView.finish skipped", e)
+        }
         mapView?.pause()
         mapStartRequested = false
         kakaoMap = null

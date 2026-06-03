@@ -42,6 +42,8 @@
     <string name="map_kakao_setup_hint">local.properties에 KAKAO_NATIVE_APP_KEY 를 넣고,\n카카오 개발자 콘솔에 패키지명·키 해시를 등록한 뒤 Sync 하세요.</string>
     <string name="map_auth_error">지도 인증 오류: %1$s\n키 해시·패키지명을 확인하세요.</string>
     <string name="map_no_markers">좌표가 있는 여행 기록이 없습니다.\n추가/수정 화면에서 위도·경도를 입력하세요.</string>
+    <string name="map_no_location_data">저장된 기록에 좌표가 없습니다.</string>
+    <string name="map_markers_setup_failed">지도 마커를 표시하지 못했습니다. 앱을 다시 실행해 보세요.</string>
     <string name="camera_permission_denied">카메라 권한이 필요합니다.</string>
     <string name="location_permission_denied">위치 권한이 필요합니다.</string>
     <string name="search_place">여행지 검색 (Geocoder)</string>

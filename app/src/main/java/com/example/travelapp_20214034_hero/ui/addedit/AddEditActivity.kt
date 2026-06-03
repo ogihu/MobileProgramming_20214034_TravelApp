@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
@@ -25,7 +26,9 @@ import com.example.travelapp_20214034_hero.databinding.ActivityAddEditBinding
 import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.resume
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -124,8 +127,15 @@ class AddEditActivity : AppCompatActivity() {
             val gps = withContext(Dispatchers.IO) {
                 PhotoExifHelper.readGps(this@AddEditActivity, uri)
                     ?: uri.path?.let { PhotoExifHelper.readGpsFromPath(it) }
-            } ?: return@launch
-
+            }
+            if (gps == null) {
+                Toast.makeText(
+                    this@AddEditActivity,
+                    R.string.exif_gps_not_found,
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@launch
+            }
             binding.editLatitude.setText(gps.latitude.toString())
             binding.editLongitude.setText(gps.longitude.toString())
             Toast.makeText(
@@ -171,15 +181,7 @@ class AddEditActivity : AppCompatActivity() {
         binding.progressBar.visibility = View.VISIBLE
         lifecycleScope.launch {
             val result = withContext(Dispatchers.IO) {
-                try {
-                    if (!Geocoder.isPresent()) return@withContext null
-                    val geocoder = Geocoder(this@AddEditActivity, Locale.KOREA)
-                    @Suppress("DEPRECATION")
-                    val addresses = geocoder.getFromLocationName(keyword, 1)
-                    addresses?.firstOrNull()
-                } catch (_: Exception) {
-                    null
-                }
+                geocodePlaceName(keyword)
             }
             binding.progressBar.visibility = View.GONE
             if (result == null) {
@@ -191,6 +193,25 @@ class AddEditActivity : AppCompatActivity() {
             binding.editLatitude.setText(result.latitude.toString())
             binding.editLongitude.setText(result.longitude.toString())
             Toast.makeText(this@AddEditActivity, R.string.search_place_ok, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private suspend fun geocodePlaceName(keyword: String): android.location.Address? {
+        return try {
+            if (!Geocoder.isPresent()) return null
+            val geocoder = Geocoder(this, Locale.KOREA)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                suspendCancellableCoroutine { cont ->
+                    geocoder.getFromLocationName(keyword, 1) { addresses ->
+                        cont.resume(addresses?.firstOrNull())
+                    }
+                }
+            } else {
+                @Suppress("DEPRECATION")
+                geocoder.getFromLocationName(keyword, 1)?.firstOrNull()
+            }
+        } catch (_: Exception) {
+            null
         }
     }
 
@@ -264,12 +285,17 @@ class AddEditActivity : AppCompatActivity() {
                 }
             }
 
-            if (success) {
-                withContext(Dispatchers.IO) {
+            withContext(Dispatchers.IO) {
+                if (success) {
                     val oldPath = previousPhotoPath
                     if (!oldPath.isNullOrBlank() && oldPath != savedPhotoPath) {
                         ImageFileHelper.deletePhotoFile(oldPath)
                     }
+                } else if (
+                    !savedPhotoPath.isNullOrBlank() &&
+                    savedPhotoPath != previousPhotoPath
+                ) {
+                    ImageFileHelper.deletePhotoFile(savedPhotoPath)
                 }
             }
 

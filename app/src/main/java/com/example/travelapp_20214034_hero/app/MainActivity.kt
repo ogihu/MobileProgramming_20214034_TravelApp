@@ -50,6 +50,8 @@ class MainActivity : AppCompatActivity() {
                     if (current !is HomeFragment) {
                         if (supportFragmentManager.backStackEntryCount > 0) {
                             supportFragmentManager.popBackStack()
+                            homeFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
+                                as? HomeFragment
                         } else {
                             showFragment(HomeFragment(), TAG_HOME, addToBackStack = false)
                         }
