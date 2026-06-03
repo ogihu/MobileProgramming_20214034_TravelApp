@@ -3,12 +3,15 @@
 
 ## 실행 방법
 1. Android Studio → **Sync Project with Gradle Files**
-2. `local.properties`에 (Git 커밋 금지):
+2. `local.properties`에 **카카오 네이티브 앱 키** (Git 커밋 금지):
    ```properties
-   MAPS_API_KEY=발급받은_키
+   KAKAO_NATIVE_APP_KEY=발급받은_네이티브앱키
    ```
-3. `gradlew signingReport` → SHA-1을 Google Cloud Console API 키에 등록
-4. Run ▶
+3. [Kakao Developers](https://developers.kakao.com/) → 플랫폼 → Android  
+   - 패키지: `com.example.travelapp_20214034_hero`  
+   - 키 해시: `gradlew signingReport` 후 등록  
+4. 제품 설정에서 **지도(Map)** 활성화 확인  
+5. Sync → Run ▶
 
 ## APK 제출
 - **Build → Build APK(s)**
@@ -24,7 +27,7 @@ com.example.travelapp_20214034_hero/
 │   ├── list/         HomeFragment, TravelAdapter, ViewHolder (CH05 RecyclerView, CH06 컨텍스트 메뉴)
 │   ├── detail/       DetailActivity (CH09 Intent)
 │   ├── addedit/      AddEditActivity (CH04 위젯, CH09 Intent, Geocoder)
-│   └── map/          MapFragment (Google Maps)
+│   └── map/          MapFragment (카카오맵 SDK)
 └── common/           TravelExtras, ImageFileHelper (CH06 파일)
 ```
 
