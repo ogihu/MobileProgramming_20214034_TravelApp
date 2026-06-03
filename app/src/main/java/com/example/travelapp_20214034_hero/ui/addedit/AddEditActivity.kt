@@ -176,12 +176,13 @@ class AddEditActivity : AppCompatActivity() {
     private fun launchCamera() {
         val photoFile = File(cacheDir, "camera/photo_${System.currentTimeMillis()}.jpg")
         photoFile.parentFile?.mkdirs()
-        cameraOutputUri = FileProvider.getUriForFile(
+        val outputUri = FileProvider.getUriForFile(
             this,
             "${packageName}.fileprovider",
             photoFile
         )
-        takePictureLauncher.launch(cameraOutputUri)
+        cameraOutputUri = outputUri
+        takePictureLauncher.launch(outputUri)
     }
 
     private fun loadPhotoPreview(source: Any) {
