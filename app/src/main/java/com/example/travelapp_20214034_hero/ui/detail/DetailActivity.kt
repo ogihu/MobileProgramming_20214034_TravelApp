@@ -1,4 +1,4 @@
-package com.example.travelapp_20214034_hero
+package com.example.travelapp_20214034_hero.ui.detail
 
 import android.os.Bundle
 import android.view.View
@@ -6,9 +6,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.example.travelapp_20214034_hero.R
+import com.example.travelapp_20214034_hero.common.ImageFileHelper
+import com.example.travelapp_20214034_hero.common.TravelExtras
 import com.example.travelapp_20214034_hero.data.TravelDbHelper
 import com.example.travelapp_20214034_hero.databinding.ActivityDetailBinding
-import com.example.travelapp_20214034_hero.util.ImageFileHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

@@ -1,4 +1,4 @@
-package com.example.travelapp_20214034_hero
+package com.example.travelapp_20214034_hero.app
 
 import android.os.Bundle
 import android.view.Menu
@@ -9,8 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import com.example.travelapp_20214034_hero.R
 import com.example.travelapp_20214034_hero.databinding.ActivityMainBinding
-import com.example.travelapp_20214034_hero.ui.home.HomeFragment
+import com.example.travelapp_20214034_hero.ui.list.HomeFragment
 import com.example.travelapp_20214034_hero.ui.map.MapFragment
 
 class MainActivity : AppCompatActivity() {

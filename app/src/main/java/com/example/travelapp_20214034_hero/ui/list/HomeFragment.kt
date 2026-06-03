@@ -1,4 +1,4 @@
-package com.example.travelapp_20214034_hero.ui.home
+package com.example.travelapp_20214034_hero.ui.list
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,13 +13,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.travelapp_20214034_hero.AddEditActivity
-import com.example.travelapp_20214034_hero.DetailActivity
 import com.example.travelapp_20214034_hero.R
-import com.example.travelapp_20214034_hero.TravelExtras
+import com.example.travelapp_20214034_hero.common.TravelExtras
 import com.example.travelapp_20214034_hero.data.TravelDbHelper
 import com.example.travelapp_20214034_hero.data.TravelItem
 import com.example.travelapp_20214034_hero.databinding.FragmentHomeBinding
+import com.example.travelapp_20214034_hero.ui.addedit.AddEditActivity
+import com.example.travelapp_20214034_hero.ui.detail.DetailActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

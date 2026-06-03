@@ -2,48 +2,63 @@
 모바일프로그래밍 기말 여행 기록 앱 (학번 20214034)
 
 ## 실행 방법
-1. Android Studio에서 프로젝트 열기 → **Sync Project with Gradle Files**
-2. `local.properties`에 Google Maps API 키 추가 (**Git 커밋 금지**):
+1. Android Studio → **Sync Project with Gradle Files**
+2. `local.properties`에 (Git 커밋 금지):
    ```properties
    MAPS_API_KEY=발급받은_키
    ```
-3. Maps SDK for Android 사용 설정 + API 키에 **패키지명·SHA-1** 제한 등록:
-   ```bash
-   gradlew signingReport
-   ```
-   - 패키지: `com.example.travelapp_20214034_hero`
-4. Run ▶ (에뮬레이터 또는 실기기)
+3. `gradlew signingReport` → SHA-1을 Google Cloud Console API 키에 등록
+4. Run ▶
 
-## APK 빌드 (제출용)
-- **Build → Build Bundle(s) / APK(s) → Build APK(s)**
-- 출력: `app/build/outputs/apk/debug/app-debug.apk`
+## APK 제출
+- **Build → Build APK(s)**
+- 경로: `app/build/outputs/apk/debug/app-debug.apk`
 
-## 구현 요약 (수업·기말 대응)
-| 항목 | 구현 |
-|------|------|
-| CH11 SQLiteOpenHelper CRUD | `data/TravelDbHelper.kt` |
-| CH05 RecyclerView + Adapter/ViewHolder | `ui/home/` |
-| CH05 Fragment + BottomNavigation | `HomeFragment`, `MapFragment` |
-| CH06 옵션 메뉴 | `menu_main.xml`, `MainActivity` |
-| CH06 컨텍스트 메뉴 | `registerForContextMenu` + `onContextItemSelected` |
-| CH06 AlertDialog | 삭제 확인 |
-| CH06 파일 처리 | `util/ImageFileHelper.kt` (내부 저장) |
-| CH09 Intent | Activity 전환, 갤러리/카메라 |
-| CH10 코루틴 | DB/저장/검색 IO + ProgressBar |
-| 지도 API | `MapFragment` + Geocoder 여행지 검색 |
+## 패키지 구조 (기능별)
 
-## 폴더 구조
 ```
-data/          SQLite (CH11)
-ui/home/       RecyclerView, 컨텍스트 메뉴
-ui/map/        Google Maps
-util/          사진 내부 저장
-MainActivity   Fragment + 옵션 메뉴
-AddEditActivity  추가·수정·Geocoder
-DetailActivity   상세
+com.example.travelapp_20214034_hero/
+├── app/              MainActivity, BottomNavigation (CH05)
+├── data/             TravelItem, TravelDbHelper (CH11 SQLite)
+├── ui/
+│   ├── list/         HomeFragment, TravelAdapter, ViewHolder (CH05 RecyclerView, CH06 컨텍스트 메뉴)
+│   ├── detail/       DetailActivity (CH09 Intent)
+│   ├── addedit/      AddEditActivity (CH04 위젯, CH09 Intent, Geocoder)
+│   └── map/          MapFragment (Google Maps)
+└── common/           TravelExtras, ImageFileHelper (CH06 파일)
+```
+
+## res 리소스 (이름 규칙)
+| 파일 | 기능 |
+|------|------|
+| `activity_main.xml` | 메인 탭 |
+| `fragment_home.xml` | 여행 목록 |
+| `item_travel.xml` | 목록 카드 |
+| `activity_add_edit.xml` | 추가·수정 |
+| `activity_detail.xml` | 상세 |
+| `fragment_map.xml` | 지도 |
+| `menu_main.xml` | 옵션 메뉴 |
+| `menu_travel_context.xml` | 컨텍스트 메뉴 |
+| `menu_bottom_nav.xml` | 하단 탭 |
+
+## Git 커밋 예시 (기능별 분리 시)
+```bash
+git add app/src/main/java/.../data/
+git commit -m "feat: data 패키지 SQLite CRUD (CH11)"
+
+git add app/src/main/java/.../ui/list/
+git commit -m "refactor: ui/list 목록 RecyclerView 모듈"
+
+git add app/src/main/java/.../ui/detail/ app/src/main/java/.../ui/addedit/
+git commit -m "refactor: ui/detail, ui/addedit Activity 분리"
+
+git add app/src/main/java/.../app/ app/src/main/AndroidManifest.xml
+git commit -m "refactor: app MainActivity 및 Manifest 경로 정리"
+
+git add app/src/main/java/.../common/
+git commit -m "refactor: common 패키지 (Extras, ImageFileHelper)"
 ```
 
 ## 제출
-- GitHub Repository URL
-- APK (또는 zip / 이메일)
-- 마감: **6월 15일 23:59** (이후 커밋 미반영)
+- GitHub URL + APK
+- 마감: **6월 15일 23:59** (이후 push 미반영)

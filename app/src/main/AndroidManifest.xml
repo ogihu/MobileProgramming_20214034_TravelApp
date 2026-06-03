@@ -26,20 +26,20 @@
             android:value="${MAPS_API_KEY}" />
 
         <activity
-            android:name=".DetailActivity"
+            android:name=".ui.detail.DetailActivity"
             android:exported="false"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".app.MainActivity"
             android:theme="@style/Theme.TravelApp_20214034_hero.WithActionBar" />
 
         <activity
-            android:name=".AddEditActivity"
+            android:name=".ui.addedit.AddEditActivity"
             android:exported="false"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".app.MainActivity"
             android:theme="@style/Theme.TravelApp_20214034_hero.WithActionBar"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".app.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

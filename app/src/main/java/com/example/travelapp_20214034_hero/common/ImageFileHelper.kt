@@ -1,4 +1,4 @@
-package com.example.travelapp_20214034_hero.util
+package com.example.travelapp_20214034_hero.common
 
 import android.content.Context
 import android.net.Uri
@@ -6,8 +6,7 @@ import java.io.File
 import java.io.FileOutputStream
 
 /**
- * CH06 파일 처리: 갤러리/카메라 URI를 앱 내부 저장소(files/photos)에 복사해
- * 앱 재실행 후에도 사진이 유지되도록 함.
+ * CH06 파일 처리: 갤러리/카메라 URI를 앱 내부 저장소(files/photos)에 복사.
  */
 object ImageFileHelper {
 

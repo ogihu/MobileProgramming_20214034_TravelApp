@@ -1,13 +1,13 @@
-package com.example.travelapp_20214034_hero.ui.home
+package com.example.travelapp_20214034_hero.ui.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.travelapp_20214034_hero.R
+import com.example.travelapp_20214034_hero.common.ImageFileHelper
 import com.example.travelapp_20214034_hero.data.TravelItem
 import com.example.travelapp_20214034_hero.databinding.ItemTravelBinding
-import com.example.travelapp_20214034_hero.util.ImageFileHelper
 
 class TravelAdapter(
     private val onItemClick: (TravelItem) -> Unit

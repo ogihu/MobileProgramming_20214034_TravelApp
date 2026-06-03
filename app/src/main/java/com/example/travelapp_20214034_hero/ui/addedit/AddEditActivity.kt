@@ -1,4 +1,4 @@
-package com.example.travelapp_20214034_hero
+package com.example.travelapp_20214034_hero.ui.addedit
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -15,10 +15,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.example.travelapp_20214034_hero.R
+import com.example.travelapp_20214034_hero.common.ImageFileHelper
+import com.example.travelapp_20214034_hero.common.TravelExtras
 import com.example.travelapp_20214034_hero.data.TravelDbHelper
 import com.example.travelapp_20214034_hero.data.TravelItem
 import com.example.travelapp_20214034_hero.databinding.ActivityAddEditBinding
-import com.example.travelapp_20214034_hero.util.ImageFileHelper
 import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
