@@ -7,13 +7,13 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView.AdapterContextMenuInfo
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.travelapp_20214034_hero.R
+import com.example.travelapp_20214034_hero.common.ImageFileHelper
 import com.example.travelapp_20214034_hero.common.TravelExtras
 import com.example.travelapp_20214034_hero.data.TravelDbHelper
 import com.example.travelapp_20214034_hero.data.TravelItem
@@ -55,12 +55,17 @@ class HomeFragment : Fragment() {
                         putExtra(TravelExtras.EXTRA_TRAVEL_ID, item.id)
                     }
                 )
+            },
+            onRegisterContextMenu = { itemView, _ ->
+                requireActivity().registerForContextMenu(itemView)
+            },
+            onUnregisterContextMenu = { itemView ->
+                requireActivity().unregisterForContextMenu(itemView)
             }
         )
 
         binding.recyclerTravels.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerTravels.adapter = adapter
-        registerForContextMenu(binding.recyclerTravels)
 
         binding.fabAdd.setOnClickListener {
             startActivity(Intent(requireContext(), AddEditActivity::class.java))
@@ -73,8 +78,8 @@ class HomeFragment : Fragment() {
         menuInfo: ContextMenu.ContextMenuInfo?
     ) {
         super.onCreateContextMenu(menu, v, menuInfo)
-        val info = menuInfo as? AdapterContextMenuInfo ?: return
-        contextMenuTravel = adapter.getItemAt(info.position) ?: return
+        val position = v.getTag(R.id.tag_list_position) as? Int ?: return
+        contextMenuTravel = adapter.getItemAt(position) ?: return
         requireActivity().menuInflater.inflate(R.menu.menu_travel_context, menu)
     }
 
@@ -137,7 +142,10 @@ class HomeFragment : Fragment() {
             .setMessage(R.string.dialog_delete_all_message)
             .setPositiveButton(R.string.yes) { _, _ ->
                 viewLifecycleOwner.lifecycleScope.launch {
-                    withContext(Dispatchers.IO) { dbHelper.deleteAllTravels() }
+                    withContext(Dispatchers.IO) {
+                        dbHelper.deleteAllTravels()
+                        ImageFileHelper.deleteAllInternalPhotos(requireContext())
+                    }
                     Toast.makeText(requireContext(), R.string.deleted, Toast.LENGTH_SHORT).show()
                     refreshList()
                 }
@@ -152,7 +160,11 @@ class HomeFragment : Fragment() {
             .setMessage(R.string.dialog_delete_message)
             .setPositiveButton(R.string.yes) { _, _ ->
                 viewLifecycleOwner.lifecycleScope.launch {
-                    withContext(Dispatchers.IO) { dbHelper.deleteTravel(item.id) }
+                    withContext(Dispatchers.IO) {
+                        val existing = dbHelper.getTravelById(item.id)
+                        dbHelper.deleteTravel(item.id)
+                        ImageFileHelper.deletePhotoFile(existing?.photoUri)
+                    }
                     Toast.makeText(requireContext(), R.string.deleted, Toast.LENGTH_SHORT).show()
                     refreshList()
                 }
@@ -162,7 +174,6 @@ class HomeFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        unregisterForContextMenu(binding.recyclerTravels)
         super.onDestroyView()
         _binding = null
     }

@@ -54,4 +54,6 @@
     <string name="menu_map_normal">일반 지도</string>
     <string name="menu_map_satellite">위성 지도</string>
     <string name="menu_map_fit">마커 전체 보기</string>
+    <string name="exif_gps_applied">사진 GPS 정보로 위·경도를 채웠습니다.</string>
+    <string name="exif_gps_not_found">이 사진에는 GPS 정보가 없습니다.</string>
 </resources>

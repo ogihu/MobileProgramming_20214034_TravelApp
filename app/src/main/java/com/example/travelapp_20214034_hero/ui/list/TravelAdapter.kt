@@ -1,6 +1,7 @@
 package com.example.travelapp_20214034_hero.ui.list
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -10,7 +11,9 @@ import com.example.travelapp_20214034_hero.data.TravelItem
 import com.example.travelapp_20214034_hero.databinding.ItemTravelBinding
 
 class TravelAdapter(
-    private val onItemClick: (TravelItem) -> Unit
+    private val onItemClick: (TravelItem) -> Unit,
+    private val onRegisterContextMenu: (View, Int) -> Unit,
+    private val onUnregisterContextMenu: (View) -> Unit
 ) : RecyclerView.Adapter<TravelViewHolder>() {
 
     private val items = mutableListOf<TravelItem>()
@@ -52,6 +55,13 @@ class TravelAdapter(
         }
 
         holder.itemView.setOnClickListener { onItemClick(item) }
+        holder.itemView.setTag(R.id.tag_list_position, position)
+        onRegisterContextMenu(holder.itemView, position)
+    }
+
+    override fun onViewRecycled(holder: TravelViewHolder) {
+        onUnregisterContextMenu(holder.itemView)
+        super.onViewRecycled(holder)
     }
 
     override fun getItemCount(): Int = items.size

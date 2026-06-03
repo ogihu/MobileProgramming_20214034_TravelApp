@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.glide)
+    implementation(libs.androidx.exifinterface)
     implementation(libs.kakao.maps.open)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.travelapp_20214034_hero.R
 import com.example.travelapp_20214034_hero.common.ImageFileHelper
+import com.example.travelapp_20214034_hero.common.PhotoExifHelper
 import com.example.travelapp_20214034_hero.common.TravelExtras
 import com.example.travelapp_20214034_hero.data.TravelDbHelper
 import com.example.travelapp_20214034_hero.data.TravelItem
@@ -38,6 +39,7 @@ class AddEditActivity : AppCompatActivity() {
 
     private var editId: Long = -1L
     private var photoUriString: String? = null
+    private var previousPhotoPath: String? = null
     private var cameraOutputUri: Uri? = null
 
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -45,16 +47,14 @@ class AddEditActivity : AppCompatActivity() {
     private val pickGalleryLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri != null) {
-                photoUriString = uri.toString()
-                loadPhotoPreview(uri)
+                onPhotoPicked(uri)
             }
         }
 
     private val takePictureLauncher =
         registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
             if (success && cameraOutputUri != null) {
-                photoUriString = cameraOutputUri.toString()
-                loadPhotoPreview(cameraOutputUri!!)
+                onPhotoPicked(cameraOutputUri!!)
             }
         }
 
@@ -92,19 +92,48 @@ class AddEditActivity : AppCompatActivity() {
     }
 
     private fun loadExisting(id: Long) {
-        val item = dbHelper.getTravelById(id)
-        if (item == null) {
-            Toast.makeText(this, R.string.error_not_found, Toast.LENGTH_SHORT).show()
-            finish()
-            return
+        binding.progressBar.visibility = View.VISIBLE
+        lifecycleScope.launch {
+            val item = withContext(Dispatchers.IO) { dbHelper.getTravelById(id) }
+            binding.progressBar.visibility = View.GONE
+            if (item == null) {
+                Toast.makeText(this@AddEditActivity, R.string.error_not_found, Toast.LENGTH_SHORT)
+                    .show()
+                finish()
+                return@launch
+            }
+            binding.editPlace.setText(item.place)
+            binding.editDate.setText(item.visitDate)
+            binding.editMemo.setText(item.memo)
+            item.latitude?.let { binding.editLatitude.setText(it.toString()) }
+            item.longitude?.let { binding.editLongitude.setText(it.toString()) }
+            photoUriString = item.photoUri
+            previousPhotoPath = item.photoUri
+            ImageFileHelper.resolveForGlide(item.photoUri)?.let { loadPhotoPreview(it) }
         }
-        binding.editPlace.setText(item.place)
-        binding.editDate.setText(item.visitDate)
-        binding.editMemo.setText(item.memo)
-        item.latitude?.let { binding.editLatitude.setText(it.toString()) }
-        item.longitude?.let { binding.editLongitude.setText(it.toString()) }
-        photoUriString = item.photoUri
-        ImageFileHelper.resolveForGlide(item.photoUri)?.let { loadPhotoPreview(it) }
+    }
+
+    private fun onPhotoPicked(uri: Uri) {
+        photoUriString = uri.toString()
+        loadPhotoPreview(uri)
+        applyGpsFromPhoto(uri)
+    }
+
+    private fun applyGpsFromPhoto(uri: Uri) {
+        lifecycleScope.launch {
+            val gps = withContext(Dispatchers.IO) {
+                PhotoExifHelper.readGps(this@AddEditActivity, uri)
+                    ?: uri.path?.let { PhotoExifHelper.readGpsFromPath(it) }
+            } ?: return@launch
+
+            binding.editLatitude.setText(gps.latitude.toString())
+            binding.editLongitude.setText(gps.longitude.toString())
+            Toast.makeText(
+                this@AddEditActivity,
+                R.string.exif_gps_applied,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun showDatePicker() {
@@ -232,6 +261,15 @@ class AddEditActivity : AppCompatActivity() {
                     dbHelper.updateTravel(item) > 0
                 } else {
                     dbHelper.insertTravel(item) != -1L
+                }
+            }
+
+            if (success) {
+                withContext(Dispatchers.IO) {
+                    val oldPath = previousPhotoPath
+                    if (!oldPath.isNullOrBlank() && oldPath != savedPhotoPath) {
+                        ImageFileHelper.deletePhotoFile(oldPath)
+                    }
                 }
             }
 

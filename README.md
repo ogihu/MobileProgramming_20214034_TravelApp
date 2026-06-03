@@ -28,8 +28,25 @@ com.example.travelapp_20214034_hero/
 │   ├── detail/       DetailActivity (CH09 Intent)
 │   ├── addedit/      AddEditActivity (CH04 위젯, CH09 Intent, Geocoder)
 │   └── map/          MapFragment (카카오맵 SDK)
-└── common/           TravelExtras, ImageFileHelper (CH06 파일)
+└── common/           TravelExtras, ImageFileHelper, PhotoExifHelper (CH06 파일·EXIF GPS)
 ```
+
+## 구현 기능 체크리스트
+| 기능 | 상태 |
+|------|------|
+| SQLite CRUD (SQLiteOpenHelper) | ✅ |
+| RecyclerView + Adapter/ViewHolder | ✅ |
+| Fragment 2 + BottomNav + 백스택 | ✅ |
+| 옵션 메뉴 3개 + About | ✅ |
+| 컨텍스트 메뉴 (목록 롱프레스) | ✅ |
+| AddEdit / Detail + Intent | ✅ |
+| 갤러리·카메라 + FileProvider | ✅ |
+| 사진 내부 저장 (`files/photos`) | ✅ |
+| Geocoder 여행지 검색 | ✅ |
+| 코루틴 + ProgressBar | ✅ |
+| 카카오맵 마커 | ✅ (키·콘솔 설정 필요) |
+| GPS EXIF → 위·경도 자동 입력 | ✅ |
+| 삭제 시 내부 사진 파일 정리 | ✅ |
 
 ## res 리소스 (이름 규칙)
 | 파일 | 기능 |

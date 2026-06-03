@@ -58,4 +58,24 @@ object ImageFileHelper {
         }
         return copyToInternalStorage(context, uri)
     }
+
+    fun deletePhotoFile(pathOrUri: String?) {
+        if (pathOrUri.isNullOrBlank()) return
+        val path = when {
+            pathOrUri.startsWith("/") -> pathOrUri
+            pathOrUri.startsWith("file://") -> Uri.parse(pathOrUri).path
+            else -> null
+        } ?: return
+        try {
+            File(path).takeIf { it.exists() }?.delete()
+        } catch (_: Exception) {
+        }
+    }
+
+    fun deleteAllInternalPhotos(context: Context) {
+        try {
+            File(context.filesDir, PHOTO_DIR).listFiles()?.forEach { it.delete() }
+        } catch (_: Exception) {
+        }
+    }
 }
