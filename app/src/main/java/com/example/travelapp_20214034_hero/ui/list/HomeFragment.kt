@@ -99,23 +99,28 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        refreshList()
+        if (_binding != null) {
+            refreshList()
+        }
     }
 
     fun refreshList(sortDesc: Boolean? = null) {
+        if (_binding == null) return
         if (sortDesc != null) {
             sortDescending = sortDesc
         }
         viewLifecycleOwner.lifecycleScope.launch {
+            val binding = _binding ?: return@launch
             binding.progressBar.visibility = View.VISIBLE
             val list = withContext(Dispatchers.IO) {
                 dbHelper.getAllTravels(sortDescending)
             }
             adapter.submitList(list)
-            binding.progressBar.visibility = View.GONE
+            val uiBinding = _binding ?: return@launch
+            uiBinding.progressBar.visibility = View.GONE
             val isEmpty = list.isEmpty()
-            binding.textEmpty.visibility = if (isEmpty) View.VISIBLE else View.GONE
-            binding.recyclerTravels.visibility = if (isEmpty) View.GONE else View.VISIBLE
+            uiBinding.textEmpty.visibility = if (isEmpty) View.VISIBLE else View.GONE
+            uiBinding.recyclerTravels.visibility = if (isEmpty) View.GONE else View.VISIBLE
         }
     }
 

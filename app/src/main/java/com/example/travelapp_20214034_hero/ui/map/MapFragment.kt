@@ -23,8 +23,8 @@ import com.kakao.vectormap.label.LabelLayer
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
+import com.kakao.vectormap.label.LabelTextBuilder
 import com.kakao.vectormap.label.LabelTextStyle
-import com.kakao.vectormap.label.LabelManager
 import com.kakao.vectormap.MapType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -66,9 +66,17 @@ class MapFragment : Fragment() {
         startKakaoMap()
     }
 
+    private fun showMapSetupError() {
+        if (_binding == null) return
+        binding.textMapHint.visibility = View.VISIBLE
+        binding.textMapHint.text = getString(R.string.map_load_error)
+        binding.mapView.visibility = View.GONE
+    }
+
     private fun startKakaoMap() {
         val view = mapView ?: return
-        view.start(
+        try {
+            view.start(
             object : MapLifeCycleCallback() {
                 override fun onMapDestroy() {}
 
@@ -81,15 +89,19 @@ class MapFragment : Fragment() {
             object : KakaoMapReadyCallback() {
                 override fun onMapReady(map: KakaoMap) {
                     kakaoMap = map
-                    val manager: LabelManager = map.labelManager
+                    val manager = map.labelManager ?: run {
+                        showMapSetupError()
+                        return
+                    }
                     textLabelStyles = manager.addLabelStyles(
                         LabelStyles.from(
-                            LabelStyle.from().setTextStyles(
-                                LabelTextStyle.from(28, Color.BLACK)
-                            )
+                            LabelStyle.from(LabelTextStyle.from(28, Color.BLACK))
                         )
                     )
-                    labelLayer = manager.layer
+                    labelLayer = manager.layer ?: run {
+                        showMapSetupError()
+                        return
+                    }
 
                     map.setOnLabelClickListener { _, _, label ->
                         val title = label.texts?.firstOrNull().orEmpty()
@@ -108,7 +120,10 @@ class MapFragment : Fragment() {
 
                 override fun getZoomLevel(): Int = 7
             }
-        )
+            )
+        } catch (e: Exception) {
+            showMapSetupError()
+        }
     }
 
     fun loadMarkers() {
@@ -117,6 +132,7 @@ class MapFragment : Fragment() {
         val styles = textLabelStyles ?: return
 
         viewLifecycleOwner.lifecycleScope.launch {
+            if (!isAdded) return@launch
             try {
                 val travels = withContext(Dispatchers.IO) {
                     TravelDbHelper(requireContext()).getTravelsWithLocation()
@@ -134,7 +150,7 @@ class MapFragment : Fragment() {
                     val label = layer.addLabel(
                         LabelOptions.from(position)
                             .setStyles(styles)
-                            .setTexts(item.place)
+                            .setTexts(LabelTextBuilder().setTexts(item.place))
                     )
                     activeLabels.add(label)
                 }
@@ -187,7 +203,9 @@ class MapFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         mapView?.resume()
-        kakaoMap?.let { loadMarkers() }
+        if (kakaoMap != null && labelLayer != null && textLabelStyles != null) {
+            loadMarkers()
+        }
     }
 
     override fun onPause() {

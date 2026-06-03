@@ -33,12 +33,15 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
-        if (savedInstanceState == null) {
+        val existingHome = supportFragmentManager.findFragmentById(R.id.fragmentContainer) as? HomeFragment
+        if (existingHome != null) {
+            homeFragment = existingHome
+        } else if (savedInstanceState == null) {
             showFragment(HomeFragment(), TAG_HOME, addToBackStack = false)
-            binding.bottomNavigation.selectedItemId = R.id.nav_home
         } else {
             homeFragment = supportFragmentManager.findFragmentByTag(TAG_HOME) as? HomeFragment
         }
+        binding.bottomNavigation.selectedItemId = R.id.nav_home
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
