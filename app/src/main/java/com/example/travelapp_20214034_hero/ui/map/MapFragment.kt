@@ -23,7 +23,6 @@ import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapType
 import com.kakao.vectormap.MapView
-import com.kakao.vectormap.MapViewInfo
 import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.Label
 import com.kakao.vectormap.label.LabelLayer
@@ -148,8 +147,6 @@ class MapFragment : Fragment() {
 
                     override fun getZoomLevel(): Int = 7
 
-                    override fun getMapViewInfo(): MapViewInfo = MapViewInfo.from(MapType.NORMAL)
-
                     override fun isVisible(): Boolean = true
                 }
             )
@@ -167,7 +164,7 @@ class MapFragment : Fragment() {
                     LabelStyle.from(LabelTextStyle.from(28, Color.BLACK))
                 )
             )
-            labelLayer = manager.layer ?: manager.getLayer()
+            labelLayer = manager.layer
         } catch (e: Exception) {
             Log.w(TAG, "Label setup skipped", e)
         }
@@ -193,7 +190,7 @@ class MapFragment : Fragment() {
         )
     }
 
-    fun loadMarkers() {
+    fun loadMarkers(showEmptyHints: Boolean = true) {
         val map = kakaoMap ?: return
         val layer = labelLayer
         val styles = textLabelStyles
