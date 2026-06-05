@@ -19,22 +19,14 @@
         android:orientation="horizontal"
         android:padding="12dp">
 
-        <com.google.android.material.card.MaterialCardView
+        <ImageView
+            android:id="@+id/imageThumbnail"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp"
-            app:strokeWidth="0dp">
-
-            <ImageView
-                android:id="@+id/imageThumbnail"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_photo_rounded"
-                android:contentDescription="@string/label_place"
-                android:scaleType="centerCrop"
-                tools:src="@mipmap/ic_launcher" />
-        </com.google.android.material.card.MaterialCardView>
+            android:background="@drawable/bg_photo_rounded"
+            android:contentDescription="@string/label_place"
+            android:scaleType="centerCrop"
+            tools:src="@mipmap/ic_launcher" />
 
         <LinearLayout
             android:layout_width="0dp"

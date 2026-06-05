@@ -14,5 +14,13 @@
         <item name="colorSecondary">@color/travel_secondary</item>
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
+        <item name="android:windowAnimationStyle">@style/TravelWindowAnimation</item>
+    </style>
+
+    <style name="TravelWindowAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:activityOpenExitAnimation">@android:anim/fade_out</item>
+        <item name="android:activityCloseEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:activityCloseExitAnimation">@android:anim/fade_out</item>
     </style>
 </resources>

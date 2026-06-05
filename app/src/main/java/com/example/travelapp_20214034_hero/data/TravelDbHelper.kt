@@ -18,8 +18,8 @@ import android.database.sqlite.SQLiteOpenHelper
  * SELECT * FROM travel WHERE id=?         → getTravelById()
  * INSERT / UPDATE / DELETE                → insert/update/deleteTravel()
  */
-class TravelDbHelper(context: Context) :
-    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class TravelDbHelper private constructor(context: Context) :
+    SQLiteOpenHelper(context.applicationContext, DATABASE_NAME, null, DATABASE_VERSION) {
 
     override fun onConfigure(db: SQLiteDatabase) {
         db.enableWriteAheadLogging()
@@ -140,6 +140,15 @@ class TravelDbHelper(context: Context) :
     }
 
     companion object {
+        @Volatile
+        private var instance: TravelDbHelper? = null
+
+        fun getInstance(context: Context): TravelDbHelper {
+            return instance ?: synchronized(this) {
+                instance ?: TravelDbHelper(context).also { instance = it }
+            }
+        }
+
         const val DATABASE_NAME = "travel_app.db"
         const val DATABASE_VERSION = 1
         const val TABLE_TRAVEL = "travel"

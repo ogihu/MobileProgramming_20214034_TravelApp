@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.travelapp_20214034_hero.BuildConfig
 import com.example.travelapp_20214034_hero.R
 import android.content.Intent
+import com.example.travelapp_20214034_hero.common.KakaoMapInitializer
 import com.example.travelapp_20214034_hero.common.TravelExtras
 import com.example.travelapp_20214034_hero.data.TravelDbHelper
 import com.example.travelapp_20214034_hero.data.TravelItem
@@ -102,6 +103,10 @@ class MapFragment : Fragment() {
 
     private fun startKakaoMap() {
         val view = mapView ?: return
+        if (!KakaoMapInitializer.ensureInitialized(requireContext())) {
+            showMapAuthError(getString(R.string.map_kakao_setup_hint))
+            return
+        }
         try {
             view.start(
                 object : MapLifeCycleCallback() {
@@ -200,7 +205,7 @@ class MapFragment : Fragment() {
             if (!isAdded) return@launch
             try {
                 val travels = withContext(Dispatchers.IO) {
-                    TravelDbHelper(requireContext()).getTravelsWithLocation()
+                    TravelDbHelper.getInstance(requireContext()).getTravelsWithLocation()
                 }
 
                 markerPositions.clear()

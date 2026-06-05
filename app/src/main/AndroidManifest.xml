@@ -34,7 +34,7 @@
             android:exported="false"
             android:parentActivityName=".app.MainActivity"
             android:theme="@style/Theme.TravelApp_20214034_hero.WithActionBar"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".app.MainActivity"

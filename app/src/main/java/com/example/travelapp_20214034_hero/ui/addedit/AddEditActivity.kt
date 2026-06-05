@@ -74,10 +74,12 @@ class AddEditActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        @Suppress("DEPRECATION")
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         binding = ActivityAddEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        dbHelper = TravelDbHelper(this)
+        dbHelper = TravelDbHelper.getInstance(this)
         editId = intent.getLongExtra(TravelExtras.EXTRA_TRAVEL_ID, -1L)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -350,6 +352,12 @@ class AddEditActivity : AppCompatActivity() {
                     .show()
             }
         }
+    }
+
+    override fun finish() {
+        super.finish()
+        @Suppress("DEPRECATION")
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
 
     override fun onSupportNavigateUp(): Boolean {

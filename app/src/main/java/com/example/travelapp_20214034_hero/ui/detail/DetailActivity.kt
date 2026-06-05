@@ -59,7 +59,7 @@ class DetailActivity : AppCompatActivity() {
         binding.fabEdit.visibility = View.GONE
         lifecycleScope.launch {
             val item = withContext(Dispatchers.IO) {
-                TravelDbHelper(this@DetailActivity).getTravelById(id)
+                TravelDbHelper.getInstance(this@DetailActivity).getTravelById(id)
             }
             if (isFinishing || isDestroyed) return@launch
             binding.progressBar.visibility = View.GONE
