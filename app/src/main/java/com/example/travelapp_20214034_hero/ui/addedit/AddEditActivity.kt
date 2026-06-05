@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.travelapp_20214034_hero.R
 import com.example.travelapp_20214034_hero.common.ImageFileHelper
 import com.example.travelapp_20214034_hero.common.PhotoExifHelper
@@ -119,10 +120,20 @@ class AddEditActivity : AppCompatActivity() {
     }
 
     private fun onPhotoPicked(uri: Uri) {
-        photoUriString = uri.toString()
-        loadPhotoPreview(uri)
-        applyGpsFromPhoto(uri, cameraOutputFile)
+        val cameraFile = cameraOutputFile
         cameraOutputFile = null
+        binding.progressBar.visibility = View.VISIBLE
+        lifecycleScope.launch {
+            val savedPath = withContext(Dispatchers.IO) {
+                ImageFileHelper.persistPhotoPath(this@AddEditActivity, uri.toString())
+            }
+            if (isFinishing || isDestroyed) return@launch
+            binding.progressBar.visibility = View.GONE
+            photoUriString = savedPath ?: uri.toString()
+            val preview = ImageFileHelper.resolveForGlide(photoUriString) ?: uri
+            loadPhotoPreview(preview)
+            applyGpsFromPhoto(uri, cameraFile)
+        }
     }
 
     private fun applyGpsFromPhoto(uri: Uri, cameraFile: File? = null) {
@@ -248,7 +259,11 @@ class AddEditActivity : AppCompatActivity() {
     private fun loadPhotoPreview(source: Any) {
         Glide.with(this)
             .load(source)
+            .override(PREVIEW_WIDTH, PREVIEW_HEIGHT)
             .centerCrop()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .dontAnimate()
+            .placeholder(R.drawable.bg_photo_placeholder)
             .into(binding.imagePhoto)
     }
 
@@ -340,5 +355,10 @@ class AddEditActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
+    }
+
+    companion object {
+        private const val PREVIEW_WIDTH = 800
+        private const val PREVIEW_HEIGHT = 600
     }
 }

@@ -22,6 +22,7 @@ import com.example.travelapp_20214034_hero.data.TravelItem
 import com.example.travelapp_20214034_hero.databinding.FragmentHomeBinding
 import com.example.travelapp_20214034_hero.ui.addedit.AddEditActivity
 import com.example.travelapp_20214034_hero.ui.detail.DetailActivity
+import com.example.travelapp_20214034_hero.ui.map.MapFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -65,15 +66,14 @@ class HomeFragment : Fragment() {
                     }
                 )
             },
-            onRegisterContextMenu = { itemView, _ ->
+            onRegisterContextMenu = { itemView ->
                 registerForContextMenu(itemView)
-            },
-            onUnregisterContextMenu = { itemView ->
-                unregisterForContextMenu(itemView)
             }
         )
 
         binding.recyclerTravels.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerTravels.setHasFixedSize(true)
+        binding.recyclerTravels.itemAnimator = null
         binding.recyclerTravels.adapter = adapter
 
         binding.fabAdd.setOnClickListener {
@@ -120,12 +120,16 @@ class HomeFragment : Fragment() {
         }
         viewLifecycleOwner.lifecycleScope.launch {
             val binding = _binding ?: return@launch
-            binding.progressBar.visibility = View.VISIBLE
+            val showProgress = adapter.itemCount == 0
+            if (showProgress) {
+                binding.progressBar.visibility = View.VISIBLE
+            }
             val list = withContext(Dispatchers.IO) {
                 dbHelper.getAllTravels(sortDescending)
             }
             if (_binding == null || !isAdded) return@launch
             adapter.submitList(list)
+            MapFragment.markMarkersStale()
             binding.progressBar.visibility = View.GONE
             val isEmpty = list.isEmpty()
             binding.textEmpty.visibility = if (isEmpty) View.VISIBLE else View.GONE

@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.travelapp_20214034_hero.R
 import com.example.travelapp_20214034_hero.common.ImageFileHelper
 import com.example.travelapp_20214034_hero.data.TravelItem
@@ -12,8 +13,7 @@ import com.example.travelapp_20214034_hero.databinding.ItemTravelBinding
 
 class TravelAdapter(
     private val onItemClick: (TravelItem) -> Unit,
-    private val onRegisterContextMenu: (View, Int) -> Unit,
-    private val onUnregisterContextMenu: (View) -> Unit
+    private val onRegisterContextMenu: (View) -> Unit
 ) : ListAdapter<TravelItem, TravelViewHolder>(TravelDiffCallback()) {
 
     fun getItemAt(position: Int): TravelItem? = currentList.getOrNull(position)
@@ -24,7 +24,9 @@ class TravelAdapter(
             parent,
             false
         )
-        return TravelViewHolder(binding)
+        val holder = TravelViewHolder(binding)
+        onRegisterContextMenu(holder.itemView)
+        return holder
     }
 
     override fun onBindViewHolder(holder: TravelViewHolder, position: Int) {
@@ -38,7 +40,10 @@ class TravelAdapter(
         if (loadTarget != null) {
             Glide.with(holder.itemView)
                 .load(loadTarget)
+                .override(THUMBNAIL_SIZE, THUMBNAIL_SIZE)
                 .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .dontAnimate()
                 .placeholder(R.drawable.bg_photo_placeholder)
                 .into(holder.binding.imageThumbnail)
         } else {
@@ -51,12 +56,14 @@ class TravelAdapter(
 
         holder.itemView.setOnClickListener { onItemClick(item) }
         holder.itemView.setTag(R.id.tag_list_position, position)
-        onRegisterContextMenu(holder.itemView, position)
     }
 
     override fun onViewRecycled(holder: TravelViewHolder) {
         Glide.with(holder.itemView).clear(holder.binding.imageThumbnail)
-        onUnregisterContextMenu(holder.itemView)
         super.onViewRecycled(holder)
+    }
+
+    companion object {
+        private const val THUMBNAIL_SIZE = 240
     }
 }

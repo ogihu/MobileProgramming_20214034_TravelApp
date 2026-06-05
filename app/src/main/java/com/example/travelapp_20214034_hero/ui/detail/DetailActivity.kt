@@ -10,12 +10,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.travelapp_20214034_hero.R
 import com.example.travelapp_20214034_hero.common.ImageFileHelper
 import com.example.travelapp_20214034_hero.common.TravelExtras
 import com.example.travelapp_20214034_hero.data.TravelDbHelper
 import com.example.travelapp_20214034_hero.databinding.ActivityDetailBinding
 import com.example.travelapp_20214034_hero.ui.addedit.AddEditActivity
+import com.example.travelapp_20214034_hero.ui.map.MapFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,6 +30,7 @@ class DetailActivity : AppCompatActivity() {
     private val editLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_OK) {
+                MapFragment.markMarkersStale()
                 loadTravel(travelId)
             }
         }
@@ -82,7 +85,10 @@ class DetailActivity : AppCompatActivity() {
             if (photoTarget != null) {
                 Glide.with(this@DetailActivity)
                     .load(photoTarget)
+                    .override(1080, 1080)
                     .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .dontAnimate()
                     .placeholder(R.drawable.bg_photo_placeholder)
                     .into(binding.imagePhoto)
             } else {

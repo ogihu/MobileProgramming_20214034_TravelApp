@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
         if (supportFragmentManager.isStateSaved) {
             transaction.commitAllowingStateLoss()
         } else {
-            transaction.commitNow()
+            transaction.commit()
         }
     }
 

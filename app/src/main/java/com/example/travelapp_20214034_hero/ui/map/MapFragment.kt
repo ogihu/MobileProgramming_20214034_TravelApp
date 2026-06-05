@@ -82,7 +82,8 @@ class MapFragment : Fragment() {
         if (!mapStartRequested) {
             mapStartRequested = true
             startKakaoMap()
-        } else if (kakaoMap != null) {
+        } else if (kakaoMap != null && pendingMarkerRefresh) {
+            pendingMarkerRefresh = false
             loadMarkers(showEmptyHints = false)
         }
     }
@@ -296,5 +297,12 @@ class MapFragment : Fragment() {
 
     companion object {
         private const val TAG = "MapFragment"
+
+        @Volatile
+        var pendingMarkerRefresh = false
+
+        fun markMarkersStale() {
+            pendingMarkerRefresh = true
+        }
     }
 }
