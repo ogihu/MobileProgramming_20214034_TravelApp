@@ -1,13 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Base.Theme.TravelApp_20214034_hero" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/travel_primary</item>
+        <item name="colorPrimaryDark">@color/travel_primary_dark</item>
+        <item name="colorSecondary">@color/travel_secondary</item>
+        <item name="android:colorBackground">@color/travel_surface</item>
+        <item name="android:statusBarColor">@color/travel_primary_dark</item>
     </style>
 
     <style name="Theme.TravelApp_20214034_hero" parent="Base.Theme.TravelApp_20214034_hero" />
 
     <style name="Theme.TravelApp_20214034_hero.WithActionBar" parent="Theme.Material3.DayNight">
+        <item name="colorPrimary">@color/travel_primary</item>
+        <item name="colorSecondary">@color/travel_secondary</item>
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
     </style>

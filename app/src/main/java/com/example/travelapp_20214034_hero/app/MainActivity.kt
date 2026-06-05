@@ -81,7 +81,11 @@ class MainActivity : AppCompatActivity() {
         if (addToBackStack) {
             transaction.addToBackStack(tag)
         }
-        transaction.commitNow()
+        if (supportFragmentManager.isStateSaved) {
+            transaction.commitAllowingStateLoss()
+        } else {
+            transaction.commitNow()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

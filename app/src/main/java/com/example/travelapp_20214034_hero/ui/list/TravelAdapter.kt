@@ -46,6 +46,9 @@ class TravelAdapter(
             holder.binding.imageThumbnail.setImageResource(R.drawable.bg_photo_placeholder)
         }
 
+        holder.binding.iconHasLocation.visibility =
+            if (item.latitude != null && item.longitude != null) View.VISIBLE else View.GONE
+
         holder.itemView.setOnClickListener { onItemClick(item) }
         holder.itemView.setTag(R.id.tag_list_position, position)
         onRegisterContextMenu(holder.itemView, position)

@@ -11,8 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.travelapp_20214034_hero.BuildConfig
 import com.example.travelapp_20214034_hero.R
+import android.content.Intent
+import com.example.travelapp_20214034_hero.common.TravelExtras
 import com.example.travelapp_20214034_hero.data.TravelDbHelper
+import com.example.travelapp_20214034_hero.data.TravelItem
 import com.example.travelapp_20214034_hero.databinding.FragmentMapBinding
+import com.example.travelapp_20214034_hero.ui.detail.DetailActivity
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -118,6 +122,15 @@ class MapFragment : Fragment() {
                         kakaoMap = map
                         setupLabelStyles(map)
                         map.setOnLabelClickListener { _, _, label ->
+                            val travelId = label.tag as? Long
+                            if (travelId != null && travelId > 0) {
+                                startActivity(
+                                    Intent(requireContext(), DetailActivity::class.java).apply {
+                                        putExtra(TravelExtras.EXTRA_TRAVEL_ID, travelId)
+                                    }
+                                )
+                                return@setOnLabelClickListener true
+                            }
                             val title = label.texts?.firstOrNull().orEmpty()
                             if (title.isNotEmpty()) {
                                 Toast.makeText(requireContext(), title, Toast.LENGTH_SHORT).show()
@@ -160,6 +173,20 @@ class MapFragment : Fragment() {
         }
     }
 
+    private fun addMarkerForTravel(item: TravelItem, layer: LabelLayer, styles: LabelStyles) {
+        val lat = item.latitude ?: return
+        val lng = item.longitude ?: return
+        val position = LatLng.from(lat, lng)
+        markerPositions.add(position)
+        val label = layer.addLabel(
+            LabelOptions.from(position)
+                .setStyles(styles)
+                .setTexts(LabelTextBuilder().setTexts(item.place))
+                .setTag(item.id)
+        )
+        activeLabels.add(label)
+    }
+
     private fun showDefaultMapArea(map: KakaoMap) {
         map.moveCamera(
             CameraUpdateFactory.newCenterPosition(LatLng.from(36.5, 127.5), 7)
@@ -184,16 +211,7 @@ class MapFragment : Fragment() {
 
                 if (layer != null && styles != null) {
                     travels.forEach { item ->
-                        val lat = item.latitude ?: return@forEach
-                        val lng = item.longitude ?: return@forEach
-                        val position = LatLng.from(lat, lng)
-                        markerPositions.add(position)
-                        val label = layer.addLabel(
-                            LabelOptions.from(position)
-                                .setStyles(styles)
-                                .setTexts(LabelTextBuilder().setTexts(item.place))
-                        )
-                        activeLabels.add(label)
+                        addMarkerForTravel(item, layer, styles)
                     }
                 }
 

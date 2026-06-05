@@ -44,6 +44,7 @@ class AddEditActivity : AppCompatActivity() {
     private var photoUriString: String? = null
     private var previousPhotoPath: String? = null
     private var cameraOutputUri: Uri? = null
+    private var cameraOutputFile: File? = null
 
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
@@ -120,14 +121,19 @@ class AddEditActivity : AppCompatActivity() {
     private fun onPhotoPicked(uri: Uri) {
         photoUriString = uri.toString()
         loadPhotoPreview(uri)
-        applyGpsFromPhoto(uri)
+        applyGpsFromPhoto(uri, cameraOutputFile)
+        cameraOutputFile = null
     }
 
-    private fun applyGpsFromPhoto(uri: Uri) {
+    private fun applyGpsFromPhoto(uri: Uri, cameraFile: File? = null) {
         lifecycleScope.launch {
             val gps = withContext(Dispatchers.IO) {
-                PhotoExifHelper.readGps(this@AddEditActivity, uri)
-                    ?: uri.path?.let { PhotoExifHelper.readGpsFromPath(it) }
+                if (cameraFile != null && cameraFile.exists()) {
+                    PhotoExifHelper.readGpsFromFile(cameraFile)
+                } else {
+                    PhotoExifHelper.readGps(this@AddEditActivity, uri)
+                        ?: uri.path?.let { PhotoExifHelper.readGpsFromPath(it) }
+                }
             }
             if (isFinishing || isDestroyed) return@launch
             if (gps == null) {
@@ -229,6 +235,7 @@ class AddEditActivity : AppCompatActivity() {
     private fun launchCamera() {
         val photoFile = File(cacheDir, "camera/photo_${System.currentTimeMillis()}.jpg")
         photoFile.parentFile?.mkdirs()
+        cameraOutputFile = photoFile
         val outputUri = FileProvider.getUriForFile(
             this,
             "${packageName}.fileprovider",

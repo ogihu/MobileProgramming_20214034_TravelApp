@@ -3,6 +3,7 @@
     <string name="nav_home">목록</string>
     <string name="nav_map">지도</string>
     <string name="travel_list_title">나의 여행</string>
+    <string name="travel_list_subtitle">소중한 여행 순간을 기록하세요</string>
     <string name="empty_travel_list">등록된 여행이 없습니다.\n＋ 버튼으로 추가하세요.</string>
     <string name="add_travel">여행 추가</string>
     <string name="edit_travel">여행 수정</string>
