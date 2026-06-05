@@ -64,13 +64,14 @@ class MapFragment : Fragment() {
         mapView = binding.mapView
 
         if (BuildConfig.KAKAO_NATIVE_APP_KEY.isBlank()) {
-            binding.textMapHint.visibility = View.VISIBLE
-            binding.textMapHint.text = getString(R.string.map_kakao_setup_hint)
+            binding.scrollMapHint.visibility = View.VISIBLE
+            binding.textMapHint.text =
+                KakaoMapInitializer.buildSetupGuide(requireContext(), getString(R.string.map_no_key_hint))
             binding.mapView.visibility = View.GONE
             return
         }
 
-        binding.textMapHint.visibility = View.GONE
+        binding.scrollMapHint.visibility = View.GONE
         binding.mapView.visibility = View.VISIBLE
     }
 
@@ -96,15 +97,16 @@ class MapFragment : Fragment() {
 
     private fun showMapAuthError(message: String?) {
         if (_binding == null) return
-        binding.textMapHint.visibility = View.VISIBLE
-        binding.textMapHint.text = getString(R.string.map_auth_error, message ?: "")
+        binding.scrollMapHint.visibility = View.VISIBLE
+        binding.textMapHint.text = KakaoMapInitializer.buildSetupGuide(requireContext(), message)
         binding.mapView.visibility = View.VISIBLE
     }
 
     private fun startKakaoMap() {
         val view = mapView ?: return
-        if (!KakaoMapInitializer.ensureInitialized(requireContext())) {
-            showMapAuthError(getString(R.string.map_kakao_setup_hint))
+        val initResult = KakaoMapInitializer.ensureInitialized(requireContext())
+        if (!initResult.success) {
+            showMapAuthError(initResult.errorMessage ?: getString(R.string.map_kakao_setup_hint))
             return
         }
         try {
@@ -143,7 +145,7 @@ class MapFragment : Fragment() {
                             false
                         }
                         if (_binding != null) {
-                            binding.textMapHint.visibility = View.GONE
+                            binding.scrollMapHint.visibility = View.GONE
                         }
                         showDefaultMapArea(map)
                         loadMarkers()

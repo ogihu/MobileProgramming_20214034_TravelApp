@@ -7,11 +7,14 @@
    ```properties
    KAKAO_NATIVE_APP_KEY=발급받은_네이티브앱키
    ```
-3. [Kakao Developers](https://developers.kakao.com/) → 플랫폼 → Android  
-   - 패키지: `com.example.travelapp_20214034_hero`  
-   - 키 해시: `gradlew signingReport` 후 등록  
-4. 제품 설정에서 **지도(Map)** 활성화 확인  
-5. Sync → Run ▶
+3. [Kakao Developers](https://developers.kakao.com/) 콘솔 설정 (스크린샷 기준 앱: 모바일프로그래밍기말정영웅)
+   - **앱 설정 → 플랫폼 → Android** 추가
+   - 패키지명: `com.example.travelapp_20214034_hero`
+   - 키 해시 (이 PC debug): `EJjb8E/YxiaBuOOuokzQlttO4WY=`
+   - 앱 지도 탭 오류 화면에도 동일 값이 표시됨
+4. **제품 설정 → 카카오맵** 활성화
+5. 네이티브 앱 키: `300e9c1bc71739828edbba12bc49230c` (`local.properties`에만, Git 금지)
+6. Android Studio → **Sync → Rebuild Project** → Run ▶
 
 ## APK 제출
 - **Build → Build APK(s)**
