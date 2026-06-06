@@ -27,8 +27,8 @@ android {
         if (localFile.exists()) {
             localProps.load(FileInputStream(localFile))
         }
-        val kakaoKey = localProps.getProperty("KAKAO_NATIVE_APP_KEY", "")
-        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"$kakaoKey\"")
+        val kakaoJsKey = localProps.getProperty("KAKAO_JAVASCRIPT_KEY", "")
+        buildConfigField("String", "KAKAO_JAVASCRIPT_KEY", "\"$kakaoJsKey\"")
     }
 
     buildTypes {
@@ -62,7 +62,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.glide)
     implementation(libs.androidx.exifinterface)
-    implementation(libs.kakao.maps.open)
+    implementation(libs.androidx.webkit)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
