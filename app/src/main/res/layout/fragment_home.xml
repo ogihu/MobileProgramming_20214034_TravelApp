@@ -6,83 +6,245 @@
     android:layout_height="match_parent"
     android:background="@color/travel_surface">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/homeScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:paddingBottom="88dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/bg_journal_header"
             android:orientation="vertical"
-            android:padding="22dp">
+            android:paddingBottom="16dp">
 
-            <TextView
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
+                android:layout_margin="16dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_photo_rounded"
+                    android:clipToOutline="true"
+                    android:contentDescription="@string/home_hero_title"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/travel_hero" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_photo_scrim" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_brand"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="@color/white"
+                        android:textStyle="bold|italic" />
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/textListTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_hero_title"
+                        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                        android:textColor="@color/white"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="@string/home_hero_subtitle"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="#EFFFFFFF" />
+
+                    <EditText
+                        android:id="@+id/editSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/bg_search_pill"
+                        android:drawableStart="@drawable/ic_search"
+                        android:drawablePadding="8dp"
+                        android:hint="@string/search_travel_hint"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:paddingHorizontal="18dp"
+                        android:singleLine="true"
+                        android:textColor="@color/travel_ink"
+                        android:textColorHint="@color/travel_text_secondary" />
+                </LinearLayout>
+            </FrameLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:letterSpacing="0.18"
-                android:text="TRAVELIO"
-                android:textAllCaps="true"
-                android:textAppearance="?attr/textAppearanceLabelMedium"
-                android:textColor="#EEFFFFFF" />
+                android:layout_marginHorizontal="16dp"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/textListTitle"
+                <TextView
+                    android:id="@+id/textStatsTotal"
+                    android:layout_width="0dp"
+                    android:layout_height="54dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_paper_card"
+                    android:gravity="center"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:textColor="@color/travel_primary"
+                    tools:text="기록 7" />
+
+                <TextView
+                    android:id="@+id/textStatsLocation"
+                    android:layout_width="0dp"
+                    android:layout_height="54dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_paper_card"
+                    android:gravity="center"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:textColor="@color/travel_primary"
+                    tools:text="지도 4" />
+
+                <TextView
+                    android:id="@+id/textStatsLatest"
+                    android:layout_width="0dp"
+                    android:layout_height="54dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_paper_card"
+                    android:gravity="center"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:textColor="@color/travel_primary"
+                    tools:text="최근 06-01" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/travel_list_title"
-                android:textAppearance="?attr/textAppearanceHeadlineMedium"
-                android:textColor="@color/white"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="22dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/home_section_hot"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="@color/travel_ink"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textHomeMore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/home_more"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textColor="@color/travel_primary" />
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingHorizontal="16dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <include
+                        android:id="@+id/cardRecommendSea"
+                        layout="@layout/item_recommend_travel"
+                        android:layout_width="168dp"
+                        android:layout_height="210dp" />
+
+                    <include
+                        android:id="@+id/cardRecommendCity"
+                        layout="@layout/item_recommend_travel"
+                        android:layout_width="168dp"
+                        android:layout_height="210dp"
+                        android:layout_marginStart="12dp" />
+
+                    <include
+                        android:id="@+id/cardRecommendPhoto"
+                        layout="@layout/item_recommend_travel"
+                        android:layout_width="168dp"
+                        android:layout_height="210dp"
+                        android:layout_marginStart="12dp" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:indeterminate="true"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/textMyTripTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="22dp"
+                android:text="@string/home_section_my_trip"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="@color/travel_ink"
                 android:textStyle="bold" />
 
-            <TextView
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerTravels"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/travel_list_subtitle"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="#EEFFFFFF" />
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:paddingHorizontal="4dp"
+                android:paddingTop="8dp"
+                tools:listitem="@layout/item_travel" />
+
+            <TextView
+                android:id="@+id/textEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:drawableTop="@drawable/ic_map"
+                android:drawablePadding="12dp"
+                android:gravity="center"
+                android:padding="24dp"
+                android:text="@string/empty_travel_list"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="@color/travel_text_secondary"
+                android:visibility="gone"
+                tools:visibility="visible" />
         </LinearLayout>
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerTravels"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:clipToPadding="false"
-            android:paddingHorizontal="4dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="88dp"
-            tools:listitem="@layout/item_travel" />
-
-        <TextView
-            android:id="@+id/textEmpty"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:drawableTop="@drawable/ic_map"
-            android:drawablePadding="12dp"
-            android:gravity="center"
-            android:padding="24dp"
-            android:text="@string/empty_travel_list"
-            android:textAppearance="?attr/textAppearanceBodyLarge"
-            android:textColor="@color/travel_text_secondary"
-            android:visibility="gone"
-            tools:visibility="visible" />
-    </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAdd"
@@ -91,7 +253,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="20dp"
         android:contentDescription="@string/add_travel"
-        app:backgroundTint="@color/travel_stamp"
+        app:backgroundTint="@color/travel_primary"
         app:srcCompat="@drawable/ic_add"
         app:tint="@color/white" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

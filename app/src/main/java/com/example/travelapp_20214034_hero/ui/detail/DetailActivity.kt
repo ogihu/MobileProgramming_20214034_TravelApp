@@ -1,6 +1,7 @@
 package com.example.travelapp_20214034_hero.ui.detail
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -15,6 +16,7 @@ import com.example.travelapp_20214034_hero.R
 import com.example.travelapp_20214034_hero.common.ImageFileHelper
 import com.example.travelapp_20214034_hero.common.TravelExtras
 import com.example.travelapp_20214034_hero.data.TravelDbHelper
+import com.example.travelapp_20214034_hero.data.TravelItem
 import com.example.travelapp_20214034_hero.databinding.ActivityDetailBinding
 import com.example.travelapp_20214034_hero.ui.addedit.AddEditActivity
 import com.example.travelapp_20214034_hero.ui.map.MapFragment
@@ -26,6 +28,7 @@ class DetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailBinding
     private var travelId: Long = -1L
+    private var currentTravel: TravelItem? = null
 
     private val editLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -51,6 +54,7 @@ class DetailActivity : AppCompatActivity() {
         }
 
         binding.fabEdit.setOnClickListener { openEdit() }
+        binding.buttonOpenMap.setOnClickListener { openMap() }
         loadTravel(travelId)
     }
 
@@ -71,32 +75,52 @@ class DetailActivity : AppCompatActivity() {
                 return@launch
             }
 
-            binding.textPlace.text = item.place
-            binding.textDate.text = item.visitDate
-            binding.textMemo.text = if (item.memo.isBlank()) "-" else item.memo
-            binding.textLocation.text =
-                if (item.latitude != null && item.longitude != null) {
-                    "${item.latitude}, ${item.longitude}"
-                } else {
-                    getString(R.string.no_location)
-                }
-
-            val photoTarget = ImageFileHelper.resolveForGlide(item.photoUri)
-            if (photoTarget != null) {
-                Glide.with(this@DetailActivity)
-                    .load(photoTarget)
-                    .override(1080, 1080)
-                    .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .dontAnimate()
-                    .placeholder(R.drawable.bg_photo_placeholder)
-                    .into(binding.imagePhoto)
-            } else {
-                binding.imagePhoto.setImageResource(R.drawable.bg_photo_placeholder)
-            }
-
+            bindTravel(item)
+            loadPhoto(item)
             binding.fabEdit.visibility = View.VISIBLE
         }
+    }
+
+    private fun bindTravel(item: TravelItem) {
+        currentTravel = item
+        binding.textPlace.text = item.place
+        binding.textDate.text = item.visitDate
+        binding.textMemo.text = if (item.memo.isBlank()) "-" else item.memo
+        val hasPhoto = !item.photoUri.isNullOrBlank()
+        val hasLocation = item.latitude != null && item.longitude != null
+        binding.textLocation.text =
+            if (hasLocation) {
+                "${item.latitude}, ${item.longitude}"
+            } else {
+                getString(R.string.no_location)
+            }
+        binding.textDetailStatus.text = getString(
+            if (hasLocation) R.string.detail_status_map_ready else R.string.detail_status_map_empty
+        )
+        binding.textVisitDateInfo.text = getString(R.string.detail_visit_date_format, item.visitDate)
+        binding.textPhotoInfo.text = getString(
+            if (hasPhoto) R.string.detail_photo_ready else R.string.detail_photo_empty
+        )
+        binding.textMapInfo.text = getString(
+            if (hasLocation) R.string.detail_map_ready else R.string.detail_map_empty
+        )
+        binding.buttonOpenMap.isEnabled = hasLocation
+    }
+
+    private fun loadPhoto(item: TravelItem) {
+        val photoTarget = ImageFileHelper.resolveForGlide(item.photoUri)
+        if (photoTarget == null) {
+            binding.imagePhoto.setImageResource(R.drawable.bg_photo_placeholder)
+            return
+        }
+        Glide.with(this)
+            .load(photoTarget)
+            .override(PHOTO_SIZE, PHOTO_SIZE)
+            .centerCrop()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .dontAnimate()
+            .placeholder(R.drawable.bg_photo_placeholder)
+            .into(binding.imagePhoto)
     }
 
     private fun openEdit() {
@@ -118,12 +142,61 @@ class DetailActivity : AppCompatActivity() {
                 openEdit()
                 true
             }
+            R.id.action_share_travel -> {
+                shareTravel()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun shareTravel() {
+        val travel = currentTravel ?: return
+        val location = if (travel.latitude != null && travel.longitude != null) {
+            "\n위치: ${travel.latitude}, ${travel.longitude}"
+        } else {
+            ""
+        }
+        val shareText = """
+            ${travel.place}
+            날짜: ${travel.visitDate}$location
+            
+            ${travel.memo.ifBlank { "메모 없음" }}
+        """.trimIndent()
+        startActivity(
+            Intent.createChooser(
+                Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, shareText)
+                },
+                getString(R.string.share_travel)
+            )
+        )
+    }
+
+    private fun openMap() {
+        val travel = currentTravel ?: return
+        val lat = travel.latitude
+        val lng = travel.longitude
+        if (lat == null || lng == null) {
+            Toast.makeText(this, R.string.no_location, Toast.LENGTH_SHORT).show()
+            return
+        }
+        val encodedPlace = Uri.encode(travel.place)
+        val uri = Uri.parse("geo:$lat,$lng?q=$lat,$lng($encodedPlace)")
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, uri))
+        } catch (_: Exception) {
+            Toast.makeText(this, R.string.search_place_failed, Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
+    }
+
+    companion object {
+        private const val PHOTO_SIZE = 1080
     }
 }

@@ -7,10 +7,6 @@ import android.net.Uri
 import java.io.File
 import java.io.FileOutputStream
 
-/**
- * CH06 파일 처리: 갤러리/카메라 URI를 앱 내부 저장소(files/photos)에 복사.
- * 저장 시 이미지를 리사이즈·압축해 메모리·로딩 부담을 줄입니다.
- */
 object ImageFileHelper {
 
     private const val PHOTO_DIR = "photos"

@@ -5,9 +5,6 @@ import android.net.Uri
 import androidx.exifinterface.media.ExifInterface
 import java.io.File
 
-/**
- * 사진 EXIF GPS → 위도·경도 (가산점: GPS EXIF 마커 연동용).
- */
 object PhotoExifHelper {
 
     data class GpsCoordinates(val latitude: Double, val longitude: Double)
@@ -39,10 +36,9 @@ object PhotoExifHelper {
     }
 
     private fun readGpsFromExif(exif: ExifInterface): GpsCoordinates? {
-        val latLong = FloatArray(2)
-        if (!exif.getLatLong(latLong)) return null
-        val lat = latLong[0].toDouble()
-        val lng = latLong[1].toDouble()
+        val latLong = exif.latLong ?: return null
+        val lat = latLong[0]
+        val lng = latLong[1]
         if (lat == 0.0 && lng == 0.0) return null
         return GpsCoordinates(lat, lng)
     }

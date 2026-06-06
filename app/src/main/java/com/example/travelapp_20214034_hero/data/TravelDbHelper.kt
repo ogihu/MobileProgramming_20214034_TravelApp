@@ -5,19 +5,6 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-/**
- * [CH11] SQLiteOpenHelper — travel 테이블 CRUD
- *
- * CREATE TABLE travel (
- *   id INTEGER PRIMARY KEY AUTOINCREMENT,
- *   place TEXT, visit_date TEXT, memo TEXT,
- *   photo_uri TEXT, latitude REAL, longitude REAL
- * )
- *
- * SELECT * FROM travel ORDER BY visit_date → getAllTravels()
- * SELECT * FROM travel WHERE id=?         → getTravelById()
- * INSERT / UPDATE / DELETE                → insert/update/deleteTravel()
- */
 class TravelDbHelper private constructor(context: Context) :
     SQLiteOpenHelper(context.applicationContext, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -42,7 +29,6 @@ class TravelDbHelper private constructor(context: Context) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // 스키마 변경 시 버전별 마이그레이션 추가. 현재 v1만 사용.
         if (oldVersion < 1) {
             onCreate(db)
         }

@@ -7,4 +7,9 @@
         android:icon="@drawable/ic_edit"
         android:title="@string/context_edit"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_share_travel"
+        android:icon="@drawable/ic_share"
+        android:title="@string/share_travel"
+        app:showAsAction="ifRoom" />
 </menu>

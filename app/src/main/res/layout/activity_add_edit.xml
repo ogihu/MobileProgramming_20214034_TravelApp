@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:letterSpacing="0.12"
-            android:text="MY TRIP"
+            android:text="@string/home_brand"
             android:textAppearance="?attr/textAppearanceLabelLarge"
             android:textColor="@color/travel_primary" />
 
@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="여행의 순간을 기록해요"
+            android:text="@string/add_edit_form_title"
             android:textAppearance="?attr/textAppearanceHeadlineSmall"
             android:textColor="@color/travel_ink"
             android:textStyle="bold" />
@@ -34,27 +34,26 @@
             android:layout_width="match_parent"
             android:layout_height="236dp"
             android:layout_marginTop="16dp"
-            android:background="@drawable/bg_polaroid_frame"
-            android:paddingStart="12dp"
-            android:paddingTop="12dp"
-            android:paddingEnd="12dp"
-            android:paddingBottom="26dp">
+            android:background="@drawable/bg_photo_rounded">
 
             <ImageView
                 android:id="@+id/imagePhoto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/bg_photo_rounded"
                 android:contentDescription="@string/pick_gallery"
                 android:scaleType="centerCrop"
-                tools:src="@mipmap/ic_launcher" />
+                android:src="@drawable/bg_photo_placeholder"
+                tools:src="@drawable/bg_photo_placeholder" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
+                android:layout_margin="16dp"
                 android:background="@drawable/bg_stamp"
-                android:text="TRIP PHOTO"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:text="@string/add_edit_photo_label"
                 android:textAppearance="?attr/textAppearanceLabelSmall"
                 android:textColor="@color/travel_primary" />
         </FrameLayout>
@@ -99,114 +98,131 @@
             android:indeterminate="true"
             android:visibility="gone" />
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="@string/hint_place"
-            app:hintAnimationEnabled="false"
-            app:boxBackgroundColor="@color/travel_paper"
-            app:boxStrokeColor="@color/travel_secondary"
-            app:startIconDrawable="@drawable/ic_location">
+            app:cardBackgroundColor="@color/travel_paper"
+            app:cardCornerRadius="26dp"
+            app:cardElevation="3dp"
+            app:strokeColor="@color/travel_card_stroke"
+            app:strokeWidth="1dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editPlace"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:imeOptions="actionNext"
-                android:inputType="textCapWords" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:orientation="vertical"
+                android:padding="16dp">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="@string/hint_date"
-            app:hintAnimationEnabled="false"
-            app:boxBackgroundColor="@color/travel_paper"
-            app:boxStrokeColor="@color/travel_secondary"
-            app:startIconDrawable="@drawable/ic_calendar">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:inputType="none" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="@string/hint_memo"
-            app:boxBackgroundColor="@color/travel_paper"
-            app:boxStrokeColor="@color/travel_secondary"
-            app:hintAnimationEnabled="false">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editMemo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="top"
-                android:imeOptions="actionDone"
-                android:inputType="textMultiLine|textCapSentences"
-                android:minLines="3" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal">
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:hint="@string/hint_latitude"
-                app:boxBackgroundColor="@color/travel_paper"
-                app:boxStrokeColor="@color/travel_secondary"
-                app:hintAnimationEnabled="false">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editLatitude"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
-                    android:inputType="numberDecimal|numberSigned" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:hint="@string/hint_place"
+                    app:boxBackgroundColor="@color/travel_surface"
+                    app:boxStrokeColor="@color/travel_secondary"
+                    app:hintAnimationEnabled="false"
+                    app:startIconDrawable="@drawable/ic_location">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/hint_longitude"
-                app:boxBackgroundColor="@color/travel_paper"
-                app:boxStrokeColor="@color/travel_secondary"
-                app:hintAnimationEnabled="false">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editPlace"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapWords" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editLongitude"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionDone"
-                    android:inputType="numberDecimal|numberSigned" />
-            </com.google.android.material.textfield.TextInputLayout>
-        </LinearLayout>
+                    android:layout_marginTop="10dp"
+                    android:hint="@string/hint_date"
+                    app:boxBackgroundColor="@color/travel_surface"
+                    app:boxStrokeColor="@color/travel_secondary"
+                    app:hintAnimationEnabled="false"
+                    app:startIconDrawable="@drawable/ic_calendar">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonSearchPlace"
-            style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/search_place"
-            android:textColor="@color/travel_primary_dark"
-            app:icon="@drawable/ic_search"
-            app:iconGravity="textStart"
-            app:strokeColor="@color/travel_secondary" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:inputType="none" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="@string/hint_memo"
+                    app:boxBackgroundColor="@color/travel_surface"
+                    app:boxStrokeColor="@color/travel_secondary"
+                    app:hintAnimationEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editMemo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:imeOptions="actionDone"
+                        android:inputType="textMultiLine|textCapSentences"
+                        android:minLines="3" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:hint="@string/hint_latitude"
+                        app:boxBackgroundColor="@color/travel_surface"
+                        app:boxStrokeColor="@color/travel_secondary"
+                        app:hintAnimationEnabled="false">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editLatitude"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:imeOptions="actionNext"
+                            android:inputType="numberDecimal|numberSigned" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/hint_longitude"
+                        app:boxBackgroundColor="@color/travel_surface"
+                        app:boxStrokeColor="@color/travel_secondary"
+                        app:hintAnimationEnabled="false">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editLongitude"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:imeOptions="actionDone"
+                            android:inputType="numberDecimal|numberSigned" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonSearchPlace"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/search_place"
+                    android:textColor="@color/travel_primary_dark"
+                    app:icon="@drawable/ic_search"
+                    app:iconGravity="textStart"
+                    app:strokeColor="@color/travel_secondary" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSave"

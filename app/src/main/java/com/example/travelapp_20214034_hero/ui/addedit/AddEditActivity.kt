@@ -87,8 +87,29 @@ class AddEditActivity : AppCompatActivity() {
 
         if (editId > 0) {
             loadExisting(editId)
+        } else {
+            binding.editDate.setText(dateFormat.format(Date()))
+            applyPrefillFromIntent()
         }
 
+        setupListeners()
+    }
+
+    private fun applyPrefillFromIntent() {
+        val place = intent.getStringExtra(TravelExtras.EXTRA_PLACE).orEmpty()
+        val lat = intent.getDoubleExtra(TravelExtras.EXTRA_LATITUDE, Double.NaN)
+        val lng = intent.getDoubleExtra(TravelExtras.EXTRA_LONGITUDE, Double.NaN)
+
+        if (place.isNotBlank()) {
+            binding.editPlace.setText(place)
+        }
+        if (!lat.isNaN() && !lng.isNaN()) {
+            binding.editLatitude.setText(lat.toString())
+            binding.editLongitude.setText(lng.toString())
+        }
+    }
+
+    private fun setupListeners() {
         binding.editDate.setOnClickListener { showDatePicker() }
         binding.buttonGallery.setOnClickListener {
             pickGalleryLauncher.launch("image/*")
@@ -283,8 +304,7 @@ class AddEditActivity : AppCompatActivity() {
             return
         }
 
-        val lat = binding.editLatitude.text?.toString()?.trim()?.toDoubleOrNull()
-        val lng = binding.editLongitude.text?.toString()?.trim()?.toDoubleOrNull()
+        val locationInput = parseLocationInput() ?: return
 
         binding.buttonSave.isEnabled = false
         binding.progressBar.visibility = View.VISIBLE
@@ -313,8 +333,8 @@ class AddEditActivity : AppCompatActivity() {
                 visitDate = date,
                 memo = memo,
                 photoUri = savedPhotoPath,
-                latitude = lat,
-                longitude = lng
+                latitude = locationInput.latitude,
+                longitude = locationInput.longitude
             )
 
             val success = withContext(Dispatchers.IO) {
@@ -354,6 +374,27 @@ class AddEditActivity : AppCompatActivity() {
         }
     }
 
+    private fun parseLocationInput(): LocationInput? {
+        val latText = binding.editLatitude.text?.toString()?.trim().orEmpty()
+        val lngText = binding.editLongitude.text?.toString()?.trim().orEmpty()
+        val lat = latText.toDoubleOrNull()
+        val lng = lngText.toDoubleOrNull()
+
+        if (latText.isNotEmpty() && lat == null || lat != null && lat !in LATITUDE_RANGE) {
+            Toast.makeText(this, R.string.error_latitude_range, Toast.LENGTH_SHORT).show()
+            return null
+        }
+        if (lngText.isNotEmpty() && lng == null || lng != null && lng !in LONGITUDE_RANGE) {
+            Toast.makeText(this, R.string.error_longitude_range, Toast.LENGTH_SHORT).show()
+            return null
+        }
+        if ((lat == null) != (lng == null)) {
+            Toast.makeText(this, R.string.error_location_pair_required, Toast.LENGTH_SHORT).show()
+            return null
+        }
+        return LocationInput(lat, lng)
+    }
+
     override fun finish() {
         super.finish()
         @Suppress("DEPRECATION")
@@ -368,5 +409,12 @@ class AddEditActivity : AppCompatActivity() {
     companion object {
         private const val PREVIEW_WIDTH = 800
         private const val PREVIEW_HEIGHT = 600
+        private val LATITUDE_RANGE = -90.0..90.0
+        private val LONGITUDE_RANGE = -180.0..180.0
     }
+
+    private data class LocationInput(
+        val latitude: Double?,
+        val longitude: Double?
+    )
 }

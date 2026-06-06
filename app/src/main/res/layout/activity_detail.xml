@@ -9,14 +9,14 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
+        android:clipToPadding="false"
+        android:fillViewport="false"
         android:overScrollMode="never">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
             android:paddingBottom="96dp">
 
             <ProgressBar
@@ -29,104 +29,201 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="286dp"
-                android:background="@drawable/bg_polaroid_frame"
-                android:paddingStart="12dp"
-                android:paddingTop="12dp"
-                android:paddingEnd="12dp"
-                android:paddingBottom="34dp">
+                android:layout_height="360dp">
 
                 <ImageView
                     android:id="@+id/imagePhoto"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/bg_photo_rounded"
                     android:contentDescription="@string/detail_travel"
                     android:scaleType="centerCrop"
-                    tools:src="@mipmap/ic_launcher" />
+                    tools:src="@drawable/bg_photo_placeholder" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_photo_scrim" />
 
                 <TextView
                     android:id="@+id/textDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|start"
-                    android:background="@drawable/bg_stamp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="24dp"
+                    android:background="@drawable/bg_white_chip"
                     android:drawableStart="@drawable/ic_calendar"
                     android:drawablePadding="6dp"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="7dp"
                     android:textAppearance="?attr/textAppearanceLabelMedium"
                     android:textColor="@color/travel_primary"
                     tools:text="2026-05-20" />
+
+                <TextView
+                    android:id="@+id/textDetailStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="24dp"
+                    android:background="@drawable/bg_white_chip"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="7dp"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textColor="@color/travel_primary"
+                    tools:text="지도 가능" />
             </FrameLayout>
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/bg_notebook_page"
-                android:orientation="vertical"
-                android:paddingStart="32dp"
-                android:paddingTop="20dp"
-                android:paddingEnd="18dp"
-                android:paddingBottom="20dp">
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="-22dp"
+                app:cardBackgroundColor="@color/travel_paper"
+                app:cardCornerRadius="28dp"
+                app:cardElevation="6dp"
+                app:strokeColor="@color/travel_card_stroke"
+                app:strokeWidth="1dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_sage_chip"
-                    android:text="@string/label_place"
-                    android:textAppearance="?attr/textAppearanceLabelLarge"
-                    android:textColor="@color/travel_primary" />
-
-                <TextView
-                    android:id="@+id/textPlace"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:textAppearance="?attr/textAppearanceHeadlineMedium"
-                    android:textColor="@color/travel_ink"
-                    android:textStyle="bold"
-                    tools:text="제주도" />
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
-                    android:background="@drawable/bg_sage_chip"
-                    android:text="@string/label_location"
-                    android:textAppearance="?attr/textAppearanceLabelLarge"
-                    android:textColor="@color/travel_primary" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_sage_chip"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:text="@string/detail_summary"
+                        android:textAppearance="?attr/textAppearanceLabelMedium"
+                        android:textColor="@color/travel_primary" />
 
-                <TextView
-                    android:id="@+id/textLocation"
+                    <TextView
+                        android:id="@+id/textPlace"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:textAppearance="?attr/textAppearanceHeadlineMedium"
+                        android:textColor="@color/travel_ink"
+                        android:textStyle="bold"
+                        tools:text="제주도" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textVisitDateInfo"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_sage_chip"
+                            android:drawableTop="@drawable/ic_info"
+                            android:drawablePadding="4dp"
+                            android:gravity="center"
+                            android:textAppearance="?attr/textAppearanceLabelSmall"
+                            android:textColor="@color/travel_primary"
+                            tools:text="방문일\n2026-02-25" />
+
+                        <TextView
+                            android:id="@+id/textPhotoInfo"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_sage_chip"
+                            android:drawableTop="@drawable/ic_camera"
+                            android:drawablePadding="4dp"
+                            android:gravity="center"
+                            android:textAppearance="?attr/textAppearanceLabelSmall"
+                            android:textColor="@color/travel_primary"
+                            tools:text="사진\n있음" />
+
+                        <TextView
+                            android:id="@+id/textMapInfo"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_sage_chip"
+                            android:drawableTop="@drawable/ic_map"
+                            android:drawablePadding="4dp"
+                            android:gravity="center"
+                            android:textAppearance="?attr/textAppearanceLabelSmall"
+                            android:textColor="@color/travel_primary"
+                            tools:text="지도\n가능" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/textLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:drawableStart="@drawable/ic_map"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="@color/travel_text_secondary"
+                        tools:text="33.49, 126.53" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonOpenMap"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/view_on_map"
+                        android:textColor="@color/travel_primary"
+                        app:icon="@drawable/ic_map"
+                        app:iconTint="@color/travel_primary"
+                        app:strokeColor="@color/travel_card_stroke" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="14dp"
+                app:cardBackgroundColor="@color/travel_paper"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/travel_card_stroke"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:drawableStart="@drawable/ic_map"
-                    android:drawablePadding="8dp"
-                    android:gravity="center_vertical"
-                    android:textAppearance="?attr/textAppearanceBodyLarge"
-                    android:textColor="@color/travel_text_secondary"
-                    tools:text="33.49, 126.53" />
+                    android:orientation="vertical"
+                    android:padding="18dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
-                    android:background="@drawable/bg_stamp"
-                    android:text="@string/label_memo"
-                    android:textAppearance="?attr/textAppearanceLabelLarge"
-                    android:textColor="@color/travel_primary" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_stamp"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:text="@string/label_memo"
+                        android:textAppearance="?attr/textAppearanceLabelMedium"
+                        android:textColor="@color/travel_primary" />
 
-                <TextView
-                    android:id="@+id/textMemo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:lineSpacingExtra="6dp"
-                    android:textAppearance="?attr/textAppearanceBodyLarge"
-                    android:textColor="@color/travel_ink"
-                    tools:text="한라산, 성산일출봉을 다녀온 날" />
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/textMemo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:lineSpacingExtra="6dp"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="@color/travel_ink"
+                        tools:text="한라산, 성산일출봉을 다녀온 날" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </ScrollView>
 

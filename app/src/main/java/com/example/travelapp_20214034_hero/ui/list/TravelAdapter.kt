@@ -53,6 +53,8 @@ class TravelAdapter(
 
         holder.binding.iconHasLocation.visibility =
             if (item.latitude != null && item.longitude != null) View.VISIBLE else View.GONE
+        holder.binding.textRecentChip.visibility =
+            if (position == 0 && currentList.isNotEmpty()) View.VISIBLE else View.GONE
 
         holder.itemView.setOnClickListener { onItemClick(item) }
         holder.itemView.setTag(R.id.tag_list_position, position)

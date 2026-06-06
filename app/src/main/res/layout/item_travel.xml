@@ -52,6 +52,20 @@
                 android:textStyle="bold"
                 tools:text="부산 여행" />
 
+            <TextView
+                android:id="@+id/textRecentChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_sage_chip"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:text="@string/recent_travel_chip"
+                android:textAppearance="?attr/textAppearanceLabelSmall"
+                android:textColor="@color/travel_primary"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -73,17 +87,21 @@
                     android:textColor="@color/travel_primary"
                     tools:text="2026-05-20" />
 
-                <ImageView
+                <TextView
                     android:id="@+id/iconHasLocation"
-                    android:layout_width="32dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="32dp"
                     android:layout_marginStart="8dp"
                     android:background="@drawable/bg_sage_chip"
                     android:contentDescription="@string/label_location"
-                    android:padding="7dp"
-                    android:src="@drawable/ic_location"
+                    android:drawableStart="@drawable/ic_location"
+                    android:drawablePadding="6dp"
+                    android:gravity="center"
+                    android:paddingHorizontal="10dp"
+                    android:text="@string/map_ready_chip"
+                    android:textAppearance="?attr/textAppearanceLabelSmall"
+                    android:textColor="@color/travel_primary"
                     android:visibility="gone"
-                    app:tint="@color/travel_primary"
                     tools:visibility="visible" />
             </LinearLayout>
 

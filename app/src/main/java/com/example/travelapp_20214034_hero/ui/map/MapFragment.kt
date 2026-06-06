@@ -32,9 +32,6 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 
-/**
- * x86 에뮬레이터 호환을 위해 카카오맵 JavaScript API를 WebView로 표시합니다.
- */
 class MapFragment : Fragment() {
 
     private var _binding: FragmentMapBinding? = null
