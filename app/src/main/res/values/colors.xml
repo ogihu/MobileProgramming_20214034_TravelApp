@@ -3,10 +3,18 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="travel_primary">#FF1565C0</color>
-    <color name="travel_primary_dark">#FF0D47A1</color>
-    <color name="travel_secondary">#FF00838F</color>
-    <color name="travel_surface">#FFF5F9FC</color>
-    <color name="travel_card_stroke">#FFE3F2FD</color>
-    <color name="travel_text_secondary">#FF546E7A</color>
+    <color name="travel_primary">#FF3F7DFF</color>
+    <color name="travel_primary_dark">#FF1D4FD7</color>
+    <color name="travel_secondary">#FF54C6F9</color>
+    <color name="travel_surface">#FFF5FAFF</color>
+    <color name="travel_card_stroke">#FFE0ECFF</color>
+    <color name="travel_text_secondary">#FF687A92</color>
+    <color name="travel_paper">#FFFFFFFF</color>
+    <color name="travel_stamp">#FF6D8DFF</color>
+    <color name="travel_ink">#FF172033</color>
+    <color name="travel_sage_light">#FFEAF5FF</color>
+    <color name="travel_tape">#66B9E9FF</color>
+    <color name="travel_sky_start">#FF78C7FF</color>
+    <color name="travel_sky_end">#FF6C7BFF</color>
+    <color name="travel_lavender">#FFF0EDFF</color>
 </resources>

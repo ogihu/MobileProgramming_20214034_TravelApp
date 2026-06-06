@@ -5,34 +5,42 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="12dp"
-    android:layout_marginVertical="6dp"
-    app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="3dp"
+    android:layout_marginVertical="8dp"
+    app:cardBackgroundColor="@color/travel_paper"
+    app:cardCornerRadius="28dp"
+    app:cardElevation="4dp"
     app:strokeColor="@color/travel_card_stroke"
     app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:padding="12dp">
 
-        <ImageView
-            android:id="@+id/imageThumbnail"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/bg_photo_rounded"
-            android:contentDescription="@string/label_place"
-            android:scaleType="centerCrop"
-            tools:src="@mipmap/ic_launcher" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="@drawable/bg_polaroid_frame"
+            android:paddingStart="10dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="18dp">
+
+            <ImageView
+                android:id="@+id/imageThumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_photo_rounded"
+                android:contentDescription="@string/label_place"
+                android:scaleType="centerCrop"
+                tools:src="@mipmap/ic_launcher" />
+        </FrameLayout>
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_weight="1"
+            android:layout_marginTop="12dp"
             android:orientation="vertical">
 
             <TextView
@@ -40,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:textColor="@color/travel_primary_dark"
+                android:textColor="@color/travel_ink"
                 android:textStyle="bold"
                 tools:text="부산 여행" />
 
@@ -51,43 +59,44 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_calendar"
-                    app:tint="@color/travel_text_secondary" />
-
                 <TextView
                     android:id="@+id/textDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
+                    android:background="@drawable/bg_stamp"
+                    android:drawableStart="@drawable/ic_calendar"
+                    android:drawablePadding="6dp"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="@color/travel_text_secondary"
+                    android:textColor="@color/travel_primary"
                     tools:text="2026-05-20" />
+
+                <ImageView
+                    android:id="@+id/iconHasLocation"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_sage_chip"
+                    android:contentDescription="@string/label_location"
+                    android:padding="7dp"
+                    android:src="@drawable/ic_location"
+                    android:visibility="gone"
+                    app:tint="@color/travel_primary"
+                    tools:visibility="visible" />
             </LinearLayout>
 
             <TextView
                 android:id="@+id/textMemoPreview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="10dp"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="@color/travel_text_secondary"
                 tools:text="해운대, 광안리..." />
-
-            <ImageView
-                android:id="@+id/iconHasLocation"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="6dp"
-                android:contentDescription="@string/label_location"
-                android:src="@drawable/ic_location"
-                android:visibility="gone"
-                tools:visibility="visible" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

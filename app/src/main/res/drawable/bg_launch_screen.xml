@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <solid android:color="@color/travel_surface" />
+        </shape>
+    </item>
+    <item
+        android:height="260dp"
+        android:gravity="top">
+        <shape>
+            <gradient
+                android:angle="270"
+                android:endColor="#00FFFFFF"
+                android:startColor="#3378C7FF" />
+        </shape>
+    </item>
+    <item
+        android:width="172dp"
+        android:height="172dp"
+        android:gravity="center">
+        <shape>
+            <solid android:color="@color/white" />
+            <corners android:radius="48dp" />
+            <stroke
+                android:width="2dp"
+                android:color="@color/travel_card_stroke" />
+        </shape>
+    </item>
+    <item
+        android:width="116dp"
+        android:height="116dp"
+        android:drawable="@drawable/ic_launcher_foreground"
+        android:gravity="center" />
+</layer-list>
